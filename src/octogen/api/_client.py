@@ -85,7 +85,7 @@ class OctogenAPI(SyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("OCTOGEN_API_BASE_URL")
         if base_url is None:
-            base_url = f"https://api.example.com"
+            base_url = f"https://api.octogen.ai"
 
         super().__init__(
             version=__version__,
@@ -262,7 +262,7 @@ class AsyncOctogenAPI(AsyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("OCTOGEN_API_BASE_URL")
         if base_url is None:
-            base_url = f"https://api.example.com"
+            base_url = f"https://api.octogen.ai"
 
         super().__init__(
             version=__version__,
