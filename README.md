@@ -1,6 +1,6 @@
 # Octogen API Python API library
 
-[![PyPI version](https://img.shields.io/pypi/v/octogen_api.svg)](https://pypi.org/project/octogen_api/)
+[![PyPI version](https://img.shields.io/pypi/v/octogen-api.svg)](https://pypi.org/project/octogen-api/)
 
 The Octogen API Python library provides convenient access to the Octogen API REST API from any Python 3.8+
 application. The library includes type definitions for all request params and response fields,
@@ -15,12 +15,9 @@ The full API of this library can be found in [api.md](api.md).
 ## Installation
 
 ```sh
-# install from the production repo
-pip install git+ssh://git@github.com/octogen-systems/octogen-py-api.git
+# install from PyPI
+pip install --pre octogen-api
 ```
-
-> [!NOTE]
-> Once this package is [published to PyPI](https://app.stainless.com/docs/guides/publish), this will become: `pip install --pre octogen_api`
 
 ## Usage
 
