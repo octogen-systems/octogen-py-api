@@ -32,7 +32,7 @@ client = OctogenAPI(
 )
 
 search_tool_output = client.catalog.agent_search(
-    text="text",
+    text="Find me red shoes less than $200",
 )
 print(search_tool_output.products)
 ```
@@ -58,7 +58,7 @@ client = AsyncOctogenAPI(
 
 async def main() -> None:
     search_tool_output = await client.catalog.agent_search(
-        text="text",
+        text="Find me red shoes less than $200",
     )
     print(search_tool_output.products)
 
@@ -111,7 +111,7 @@ client = OctogenAPI()
 
 try:
     client.catalog.agent_search(
-        text="text",
+        text="Find me red shoes less than $200",
     )
 except octogen.api.APIConnectionError as e:
     print("The server could not be reached")
@@ -156,7 +156,7 @@ client = OctogenAPI(
 
 # Or, configure per-request:
 client.with_options(max_retries=5).catalog.agent_search(
-    text="text",
+    text="Find me red shoes less than $200",
 )
 ```
 
@@ -181,7 +181,7 @@ client = OctogenAPI(
 
 # Override per-request:
 client.with_options(timeout=5.0).catalog.agent_search(
-    text="text",
+    text="Find me red shoes less than $200",
 )
 ```
 
@@ -224,7 +224,7 @@ from octogen.api import OctogenAPI
 
 client = OctogenAPI()
 response = client.catalog.with_raw_response.agent_search(
-    text="text",
+    text="Find me red shoes less than $200",
 )
 print(response.headers.get('X-My-Header'))
 
@@ -244,7 +244,7 @@ To stream the response body, use `.with_streaming_response` instead, which requi
 
 ```python
 with client.catalog.with_streaming_response.agent_search(
-    text="text",
+    text="Find me red shoes less than $200",
 ) as response:
     print(response.headers.get("X-My-Header"))
 
