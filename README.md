@@ -28,7 +28,7 @@ import os
 from octogen.api import OctogenAPI
 
 client = OctogenAPI(
-    api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
+    octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
 )
 
 search_tool_output = client.catalog.text_search(
@@ -37,10 +37,10 @@ search_tool_output = client.catalog.text_search(
 print(search_tool_output.products)
 ```
 
-While you can provide an `api_key` keyword argument,
+While you can provide a `octogen_api_key` keyword argument,
 we recommend using [python-dotenv](https://pypi.org/project/python-dotenv/)
-to add `OCTOGEN_API_KEY="My API Key"` to your `.env` file
-so that your API Key is not stored in source control.
+to add `OCTOGEN_API_KEY="My Octogen API Key"` to your `.env` file
+so that your Octogen API Key is not stored in source control.
 
 ## Async usage
 
@@ -52,7 +52,7 @@ import asyncio
 from octogen.api import AsyncOctogenAPI
 
 client = AsyncOctogenAPI(
-    api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
+    octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
 )
 
 
