@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.2 (2025-05-15)
+
+Full Changelog: [v0.1.0-alpha.1...v0.1.0-alpha.2](https://github.com/octogen-systems/octogen-py-api/compare/v0.1.0-alpha.1...v0.1.0-alpha.2)
+
+### Features
+
+* **api:** update via SDK Studio ([79894f7](https://github.com/octogen-systems/octogen-py-api/commit/79894f7c8cae4266867ad4b493d789668a48179c))
+
+
+### Chores
+
+* **ci:** upload sdks to package manager ([bf6eac2](https://github.com/octogen-systems/octogen-py-api/commit/bf6eac2ce4240871573b7cdeee91a1203d9e5ca7))
+
 ## 0.1.0-alpha.1 (2025-05-14)
 
 Full Changelog: [v0.0.1-alpha.1...v0.1.0-alpha.1](https://github.com/octogen-systems/octogen-py-api/compare/v0.0.1-alpha.1...v0.1.0-alpha.1)

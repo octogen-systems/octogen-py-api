@@ -341,7 +341,7 @@ class TestOctogenAPI:
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("Authorization") == f"Bearer {api_key}"
 
-        with update_env(**{"OCTOGEN_API_API_KEY": Omit()}):
+        with update_env(**{"OCTOGEN_API_KEY": Omit()}):
             client2 = OctogenAPI(base_url=base_url, api_key=None, _strict_response_validation=True)
 
         with pytest.raises(
@@ -1124,7 +1124,7 @@ class TestAsyncOctogenAPI:
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("Authorization") == f"Bearer {api_key}"
 
-        with update_env(**{"OCTOGEN_API_API_KEY": Omit()}):
+        with update_env(**{"OCTOGEN_API_KEY": Omit()}):
             client2 = AsyncOctogenAPI(base_url=base_url, api_key=None, _strict_response_validation=True)
 
         with pytest.raises(
