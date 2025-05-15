@@ -28,7 +28,7 @@ def pytest_collection_modifyitems(items: list[pytest.Function]) -> None:
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
-api_key = "My API Key"
+octogen_api_key = "My Octogen API Key"
 
 
 @pytest.fixture(scope="session")
@@ -37,7 +37,7 @@ def client(request: FixtureRequest) -> Iterator[OctogenAPI]:
     if not isinstance(strict, bool):
         raise TypeError(f"Unexpected fixture parameter type {type(strict)}, expected {bool}")
 
-    with OctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=strict) as client:
+    with OctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=strict) as client:
         yield client
 
 
@@ -47,5 +47,7 @@ async def async_client(request: FixtureRequest) -> AsyncIterator[AsyncOctogenAPI
     if not isinstance(strict, bool):
         raise TypeError(f"Unexpected fixture parameter type {type(strict)}, expected {bool}")
 
-    async with AsyncOctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=strict) as client:
+    async with AsyncOctogenAPI(
+        base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=strict
+    ) as client:
         yield client
