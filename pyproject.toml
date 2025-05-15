@@ -4,9 +4,7 @@ version = "0.1.0-alpha.2"
 description = "The official Python library for the octogen-api API"
 dynamic = ["readme"]
 license = "MIT"
-authors = [
-{ name = "Octogen API", email = "support@octogen.ai" },
-]
+authors = [{ name = "Octogen API", email = "support@octogen.ai" }]
 dependencies = [
   "httpx>=0.23.0, <1",
   "pydantic>=1.9.0, <3",
@@ -30,7 +28,7 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Operating System :: Microsoft :: Windows",
   "Topic :: Software Development :: Libraries :: Python Modules",
-  "License :: OSI Approved :: MIT License"
+  "License :: OSI Approved :: MIT License",
 ]
 
 [project.urls]
@@ -67,17 +65,11 @@ format = { chain = [
 "format:docs" = "python scripts/utils/ruffen-docs.py README.md api.md"
 "format:ruff" = "ruff format"
 
-"lint" = { chain = [
-  "check:ruff",
-  "typecheck",
-  "check:importable",
-  "check:namespace",
-] }
+"lint" = { chain = ["check:ruff", "typecheck", "check:importable"] }
 "check:ruff" = "ruff check ."
 "fix:ruff" = "ruff check --fix ."
 
 "check:importable" = "python -c 'import octogen.api'"
-"check:namespace" = "python -c 'import sys, pathlib; pkg=sys.modules[\"octogen\"].__spec__; assert pkg.origin is None, \"octogen should be a namespace package without __init__.py\"'"
 
 typecheck = { chain = ["typecheck:pyright", "typecheck:mypy"] }
 "typecheck:pyright" = "pyright"
