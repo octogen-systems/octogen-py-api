@@ -23,7 +23,6 @@ from pydantic import ValidationError
 
 from octogen.api import OctogenAPI, AsyncOctogenAPI, APIResponseValidationError
 from octogen.api._types import Omit
-from octogen.api._utils import maybe_transform
 from octogen.api._models import BaseModel, FinalRequestOptions
 from octogen.api._constants import RAW_RESPONSE_HEADER
 from octogen.api._exceptions import APIStatusError, APITimeoutError, OctogenAPIError, APIResponseValidationError
@@ -33,7 +32,6 @@ from octogen.api._base_client import (
     BaseClient,
     make_request_options,
 )
-from octogen.api.types.catalog_text_search_params import CatalogTextSearchParams
 
 from .utils import update_env
 
@@ -757,14 +755,11 @@ class TestOctogenAPI:
     @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.post("/catalog/text_search").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.get("/catalog/agent_search").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            self.client.post(
-                "/catalog/text_search",
-                body=cast(object, maybe_transform(dict(text="text"), CatalogTextSearchParams)),
-                cast_to=httpx.Response,
-                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
+            self.client.get(
+                "/catalog/agent_search", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
             )
 
         assert _get_open_connections(self.client) == 0
@@ -772,14 +767,11 @@ class TestOctogenAPI:
     @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.post("/catalog/text_search").mock(return_value=httpx.Response(500))
+        respx_mock.get("/catalog/agent_search").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            self.client.post(
-                "/catalog/text_search",
-                body=cast(object, maybe_transform(dict(text="text"), CatalogTextSearchParams)),
-                cast_to=httpx.Response,
-                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
+            self.client.get(
+                "/catalog/agent_search", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
             )
 
         assert _get_open_connections(self.client) == 0
@@ -808,9 +800,9 @@ class TestOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
+        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
 
-        response = client.catalog.with_raw_response.text_search(text="text")
+        response = client.catalog.with_raw_response.agent_search(text="text")
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -832,9 +824,9 @@ class TestOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
+        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
 
-        response = client.catalog.with_raw_response.text_search(
+        response = client.catalog.with_raw_response.agent_search(
             text="text", extra_headers={"x-stainless-retry-count": Omit()}
         )
 
@@ -857,9 +849,9 @@ class TestOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
+        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
 
-        response = client.catalog.with_raw_response.text_search(
+        response = client.catalog.with_raw_response.agent_search(
             text="text", extra_headers={"x-stainless-retry-count": "42"}
         )
 
@@ -1572,14 +1564,11 @@ class TestAsyncOctogenAPI:
     @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     async def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.post("/catalog/text_search").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.get("/catalog/agent_search").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            await self.client.post(
-                "/catalog/text_search",
-                body=cast(object, maybe_transform(dict(text="text"), CatalogTextSearchParams)),
-                cast_to=httpx.Response,
-                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
+            await self.client.get(
+                "/catalog/agent_search", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
             )
 
         assert _get_open_connections(self.client) == 0
@@ -1587,14 +1576,11 @@ class TestAsyncOctogenAPI:
     @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     async def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.post("/catalog/text_search").mock(return_value=httpx.Response(500))
+        respx_mock.get("/catalog/agent_search").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            await self.client.post(
-                "/catalog/text_search",
-                body=cast(object, maybe_transform(dict(text="text"), CatalogTextSearchParams)),
-                cast_to=httpx.Response,
-                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
+            await self.client.get(
+                "/catalog/agent_search", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
             )
 
         assert _get_open_connections(self.client) == 0
@@ -1624,9 +1610,9 @@ class TestAsyncOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
+        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
 
-        response = await client.catalog.with_raw_response.text_search(text="text")
+        response = await client.catalog.with_raw_response.agent_search(text="text")
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -1649,9 +1635,9 @@ class TestAsyncOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
+        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
 
-        response = await client.catalog.with_raw_response.text_search(
+        response = await client.catalog.with_raw_response.agent_search(
             text="text", extra_headers={"x-stainless-retry-count": Omit()}
         )
 
@@ -1675,9 +1661,9 @@ class TestAsyncOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
+        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
 
-        response = await client.catalog.with_raw_response.text_search(
+        response = await client.catalog.with_raw_response.agent_search(
             text="text", extra_headers={"x-stainless-retry-count": "42"}
         )
 

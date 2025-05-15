@@ -31,7 +31,7 @@ client = OctogenAPI(
     octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
 )
 
-search_tool_output = client.catalog.text_search(
+search_tool_output = client.catalog.agent_search(
     text="text",
 )
 print(search_tool_output.products)
@@ -57,7 +57,7 @@ client = AsyncOctogenAPI(
 
 
 async def main() -> None:
-    search_tool_output = await client.catalog.text_search(
+    search_tool_output = await client.catalog.agent_search(
         text="text",
     )
     print(search_tool_output.products)
@@ -110,7 +110,7 @@ from octogen.api import OctogenAPI
 client = OctogenAPI()
 
 try:
-    client.catalog.text_search(
+    client.catalog.agent_search(
         text="text",
     )
 except octogen.api.APIConnectionError as e:
@@ -155,7 +155,7 @@ client = OctogenAPI(
 )
 
 # Or, configure per-request:
-client.with_options(max_retries=5).catalog.text_search(
+client.with_options(max_retries=5).catalog.agent_search(
     text="text",
 )
 ```
@@ -180,7 +180,7 @@ client = OctogenAPI(
 )
 
 # Override per-request:
-client.with_options(timeout=5.0).catalog.text_search(
+client.with_options(timeout=5.0).catalog.agent_search(
     text="text",
 )
 ```
@@ -223,12 +223,12 @@ The "raw" Response object can be accessed by prefixing `.with_raw_response.` to 
 from octogen.api import OctogenAPI
 
 client = OctogenAPI()
-response = client.catalog.with_raw_response.text_search(
+response = client.catalog.with_raw_response.agent_search(
     text="text",
 )
 print(response.headers.get('X-My-Header'))
 
-catalog = response.parse()  # get the object that `catalog.text_search()` would have returned
+catalog = response.parse()  # get the object that `catalog.agent_search()` would have returned
 print(catalog.products)
 ```
 
@@ -243,7 +243,7 @@ The above interface eagerly reads the full response body when you make the reque
 To stream the response body, use `.with_streaming_response` instead, which requires a context manager and only reads the response body once you call `.read()`, `.text()`, `.json()`, `.iter_bytes()`, `.iter_text()`, `.iter_lines()` or `.parse()`. In the async client, these are async methods.
 
 ```python
-with client.catalog.with_streaming_response.text_search(
+with client.catalog.with_streaming_response.agent_search(
     text="text",
 ) as response:
     print(response.headers.get("X-My-Header"))
