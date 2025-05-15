@@ -3,8 +3,10 @@ name = "octogen-api"
 version = "0.1.0-alpha.1"
 description = "The official Python library for the octogen-api API"
 dynamic = ["readme"]
-license = "Apache-2.0"
-authors = [{ name = "Octogen API", email = "support@octogen.ai" }]
+license = "MIT"
+authors = [
+{ name = "Octogen API", email = "support@octogen.ai" },
+]
 dependencies = [
   "httpx>=0.23.0, <1",
   "pydantic>=1.9.0, <3",
@@ -28,7 +30,7 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Operating System :: Microsoft :: Windows",
   "Topic :: Software Development :: Libraries :: Python Modules",
-  "License :: OSI Approved :: Apache Software License",
+  "License :: OSI Approved :: MIT License"
 ]
 
 [project.urls]
