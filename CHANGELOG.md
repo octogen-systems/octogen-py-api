@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.0-alpha.5 (2025-05-28)
+
+Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/octogen-systems/octogen-py-api/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
+
+### Bug Fixes
+
+* **docs/api:** remove references to nonexistent types ([61e4753](https://github.com/octogen-systems/octogen-py-api/commit/61e4753d0a0f03ca0822cd680e6a190afaae7206))
+
+
+### Chores
+
+* **ci:** fix installation instructions ([dd70d24](https://github.com/octogen-systems/octogen-py-api/commit/dd70d244ec1745fac96fb5e1b019b4f92f7c1edf))
+* **docs:** grammar improvements ([0ed46e0](https://github.com/octogen-systems/octogen-py-api/commit/0ed46e03c3c4cbfaed4a172b601b15e893e349c6))
+* **internal:** codegen related update ([88864d9](https://github.com/octogen-systems/octogen-py-api/commit/88864d9ff0fd1ec823df176bd38e83b186e490c7))
+
 ## 0.1.0-alpha.4 (2025-05-15)
 
 Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/octogen-systems/octogen-py-api/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
