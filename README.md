@@ -1,6 +1,6 @@
 # Octogen API Python API library
 
-[![PyPI version](https://img.shields.io/pypi/v/octogen_api.svg)](https://pypi.org/project/octogen_api/)
+[![PyPI version](https://img.shields.io/pypi/v/octogen-api.svg)](https://pypi.org/project/octogen-api/)
 
 The Octogen API Python library provides convenient access to the Octogen API REST API from any Python 3.8+
 application. The library includes type definitions for all request params and response fields,
@@ -10,17 +10,14 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Documentation
 
-The full API of this library can be found in [api.md](api.md).
+The REST API documentation can be found on [docs.octogen.ai](https://docs.octogen.ai). The full API of this library can be found in [api.md](api.md).
 
 ## Installation
 
 ```sh
-# install from this staging repo
-pip install git+ssh://git@github.com/stainless-sdks/octogen-api-python.git
+# install from PyPI
+pip install --pre octogen-api
 ```
-
-> [!NOTE]
-> Once this package is [published to PyPI](https://app.stainless.com/docs/guides/publish), this will become: `pip install --pre octogen_api`
 
 ## Usage
 
@@ -31,19 +28,19 @@ import os
 from octogen_api import OctogenAPI
 
 client = OctogenAPI(
-    api_key=os.environ.get("OCTOGEN_API_API_KEY"),  # This is the default and can be omitted
+    octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
 )
 
-search_tool_output = client.catalog.text_search(
+search_tool_output = client.catalog.agent_search(
     text="text",
 )
 print(search_tool_output.products)
 ```
 
-While you can provide an `api_key` keyword argument,
+While you can provide a `octogen_api_key` keyword argument,
 we recommend using [python-dotenv](https://pypi.org/project/python-dotenv/)
-to add `OCTOGEN_API_API_KEY="My API Key"` to your `.env` file
-so that your API Key is not stored in source control.
+to add `OCTOGEN_API_KEY="My Octogen API Key"` to your `.env` file
+so that your Octogen API Key is not stored in source control.
 
 ## Async usage
 
@@ -55,12 +52,12 @@ import asyncio
 from octogen_api import AsyncOctogenAPI
 
 client = AsyncOctogenAPI(
-    api_key=os.environ.get("OCTOGEN_API_API_KEY"),  # This is the default and can be omitted
+    octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
 )
 
 
 async def main() -> None:
-    search_tool_output = await client.catalog.text_search(
+    search_tool_output = await client.catalog.agent_search(
         text="text",
     )
     print(search_tool_output.products)
@@ -113,7 +110,7 @@ from octogen_api import OctogenAPI
 client = OctogenAPI()
 
 try:
-    client.catalog.text_search(
+    client.catalog.agent_search(
         text="text",
     )
 except octogen_api.APIConnectionError as e:
@@ -158,7 +155,7 @@ client = OctogenAPI(
 )
 
 # Or, configure per-request:
-client.with_options(max_retries=5).catalog.text_search(
+client.with_options(max_retries=5).catalog.agent_search(
     text="text",
 )
 ```
@@ -183,7 +180,7 @@ client = OctogenAPI(
 )
 
 # Override per-request:
-client.with_options(timeout=5.0).catalog.text_search(
+client.with_options(timeout=5.0).catalog.agent_search(
     text="text",
 )
 ```
@@ -226,18 +223,18 @@ The "raw" Response object can be accessed by prefixing `.with_raw_response.` to 
 from octogen_api import OctogenAPI
 
 client = OctogenAPI()
-response = client.catalog.with_raw_response.text_search(
+response = client.catalog.with_raw_response.agent_search(
     text="text",
 )
 print(response.headers.get('X-My-Header'))
 
-catalog = response.parse()  # get the object that `catalog.text_search()` would have returned
+catalog = response.parse()  # get the object that `catalog.agent_search()` would have returned
 print(catalog.products)
 ```
 
-These methods return an [`APIResponse`](https://github.com/stainless-sdks/octogen-api-python/tree/main/src/octogen_api/_response.py) object.
+These methods return an [`APIResponse`](https://github.com/octogen-ai/octogen-py-api/tree/main/src/octogen_api/_response.py) object.
 
-The async client returns an [`AsyncAPIResponse`](https://github.com/stainless-sdks/octogen-api-python/tree/main/src/octogen_api/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
+The async client returns an [`AsyncAPIResponse`](https://github.com/octogen-ai/octogen-py-api/tree/main/src/octogen_api/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
 
 #### `.with_streaming_response`
 
@@ -246,7 +243,7 @@ The above interface eagerly reads the full response body when you make the reque
 To stream the response body, use `.with_streaming_response` instead, which requires a context manager and only reads the response body once you call `.read()`, `.text()`, `.json()`, `.iter_bytes()`, `.iter_text()`, `.iter_lines()` or `.parse()`. In the async client, these are async methods.
 
 ```python
-with client.catalog.with_streaming_response.text_search(
+with client.catalog.with_streaming_response.agent_search(
     text="text",
 ) as response:
     print(response.headers.get("X-My-Header"))
@@ -343,7 +340,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/octogen-api-python/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/octogen-ai/octogen-py-api/issues) with questions, bugs, or suggestions.
 
 ### Determining the installed version
 
