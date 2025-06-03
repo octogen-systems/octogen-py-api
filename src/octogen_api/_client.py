@@ -13,7 +13,6 @@ from ._qs import Querystring
 from ._types import (
     NOT_GIVEN,
     Omit,
-    Headers,
     Timeout,
     NotGiven,
     Transport,
@@ -24,7 +23,7 @@ from ._utils import is_given, get_async_library
 from ._version import __version__
 from .resources import catalog
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
-from ._exceptions import APIStatusError
+from ._exceptions import APIStatusError, OctogenAPIError
 from ._base_client import (
     DEFAULT_MAX_RETRIES,
     SyncAPIClient,
@@ -49,12 +48,12 @@ class OctogenAPI(SyncAPIClient):
     with_streaming_response: OctogenAPIWithStreamedResponse
 
     # client options
-    api_key: str | None
+    octogen_api_key: str
 
     def __init__(
         self,
         *,
-        api_key: str | None = None,
+        octogen_api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: Union[float, Timeout, None, NotGiven] = NOT_GIVEN,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -76,16 +75,20 @@ class OctogenAPI(SyncAPIClient):
     ) -> None:
         """Construct a new synchronous OctogenAPI client instance.
 
-        This automatically infers the `api_key` argument from the `OCTOGEN_API_API_KEY` environment variable if it is not provided.
+        This automatically infers the `octogen_api_key` argument from the `OCTOGEN_API_KEY` environment variable if it is not provided.
         """
-        if api_key is None:
-            api_key = os.environ.get("OCTOGEN_API_API_KEY")
-        self.api_key = api_key
+        if octogen_api_key is None:
+            octogen_api_key = os.environ.get("OCTOGEN_API_KEY")
+        if octogen_api_key is None:
+            raise OctogenAPIError(
+                "The octogen_api_key client option must be set either by passing octogen_api_key to the client or by setting the OCTOGEN_API_KEY environment variable"
+            )
+        self.octogen_api_key = octogen_api_key
 
         if base_url is None:
             base_url = os.environ.get("OCTOGEN_API_BASE_URL")
         if base_url is None:
-            base_url = f"https://api.example.com"
+            base_url = f"https://api.octogen.ai"
 
         super().__init__(
             version=__version__,
@@ -110,10 +113,8 @@ class OctogenAPI(SyncAPIClient):
     @property
     @override
     def auth_headers(self) -> dict[str, str]:
-        api_key = self.api_key
-        if api_key is None:
-            return {}
-        return {"Authorization": f"Bearer {api_key}"}
+        octogen_api_key = self.octogen_api_key
+        return {"x-api-key": octogen_api_key}
 
     @property
     @override
@@ -124,21 +125,10 @@ class OctogenAPI(SyncAPIClient):
             **self._custom_headers,
         }
 
-    @override
-    def _validate_headers(self, headers: Headers, custom_headers: Headers) -> None:
-        if self.api_key and headers.get("Authorization"):
-            return
-        if isinstance(custom_headers.get("Authorization"), Omit):
-            return
-
-        raise TypeError(
-            '"Could not resolve authentication method. Expected the api_key to be set. Or for the `Authorization` headers to be explicitly omitted"'
-        )
-
     def copy(
         self,
         *,
-        api_key: str | None = None,
+        octogen_api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = NOT_GIVEN,
         http_client: httpx.Client | None = None,
@@ -172,7 +162,7 @@ class OctogenAPI(SyncAPIClient):
 
         http_client = http_client or self._client
         return self.__class__(
-            api_key=api_key or self.api_key,
+            octogen_api_key=octogen_api_key or self.octogen_api_key,
             base_url=base_url or self.base_url,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
@@ -226,12 +216,12 @@ class AsyncOctogenAPI(AsyncAPIClient):
     with_streaming_response: AsyncOctogenAPIWithStreamedResponse
 
     # client options
-    api_key: str | None
+    octogen_api_key: str
 
     def __init__(
         self,
         *,
-        api_key: str | None = None,
+        octogen_api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: Union[float, Timeout, None, NotGiven] = NOT_GIVEN,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -253,16 +243,20 @@ class AsyncOctogenAPI(AsyncAPIClient):
     ) -> None:
         """Construct a new async AsyncOctogenAPI client instance.
 
-        This automatically infers the `api_key` argument from the `OCTOGEN_API_API_KEY` environment variable if it is not provided.
+        This automatically infers the `octogen_api_key` argument from the `OCTOGEN_API_KEY` environment variable if it is not provided.
         """
-        if api_key is None:
-            api_key = os.environ.get("OCTOGEN_API_API_KEY")
-        self.api_key = api_key
+        if octogen_api_key is None:
+            octogen_api_key = os.environ.get("OCTOGEN_API_KEY")
+        if octogen_api_key is None:
+            raise OctogenAPIError(
+                "The octogen_api_key client option must be set either by passing octogen_api_key to the client or by setting the OCTOGEN_API_KEY environment variable"
+            )
+        self.octogen_api_key = octogen_api_key
 
         if base_url is None:
             base_url = os.environ.get("OCTOGEN_API_BASE_URL")
         if base_url is None:
-            base_url = f"https://api.example.com"
+            base_url = f"https://api.octogen.ai"
 
         super().__init__(
             version=__version__,
@@ -287,10 +281,8 @@ class AsyncOctogenAPI(AsyncAPIClient):
     @property
     @override
     def auth_headers(self) -> dict[str, str]:
-        api_key = self.api_key
-        if api_key is None:
-            return {}
-        return {"Authorization": f"Bearer {api_key}"}
+        octogen_api_key = self.octogen_api_key
+        return {"x-api-key": octogen_api_key}
 
     @property
     @override
@@ -301,21 +293,10 @@ class AsyncOctogenAPI(AsyncAPIClient):
             **self._custom_headers,
         }
 
-    @override
-    def _validate_headers(self, headers: Headers, custom_headers: Headers) -> None:
-        if self.api_key and headers.get("Authorization"):
-            return
-        if isinstance(custom_headers.get("Authorization"), Omit):
-            return
-
-        raise TypeError(
-            '"Could not resolve authentication method. Expected the api_key to be set. Or for the `Authorization` headers to be explicitly omitted"'
-        )
-
     def copy(
         self,
         *,
-        api_key: str | None = None,
+        octogen_api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = NOT_GIVEN,
         http_client: httpx.AsyncClient | None = None,
@@ -349,7 +330,7 @@ class AsyncOctogenAPI(AsyncAPIClient):
 
         http_client = http_client or self._client
         return self.__class__(
-            api_key=api_key or self.api_key,
+            octogen_api_key=octogen_api_key or self.octogen_api_key,
             base_url=base_url or self.base_url,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,

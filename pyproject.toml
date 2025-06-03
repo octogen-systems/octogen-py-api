@@ -1,9 +1,9 @@
 [project]
-name = "octogen_api"
-version = "0.0.1-alpha.0"
+name = "octogen-api"
+version = "0.1.0-alpha.5"
 description = "The official Python library for the octogen-api API"
 dynamic = ["readme"]
-license = "Apache-2.0"
+license = "MIT"
 authors = [
 { name = "Octogen API", email = "" },
 ]
@@ -30,12 +30,12 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Operating System :: Microsoft :: Windows",
   "Topic :: Software Development :: Libraries :: Python Modules",
-  "License :: OSI Approved :: Apache Software License"
+  "License :: OSI Approved :: MIT License"
 ]
 
 [project.urls]
-Homepage = "https://github.com/stainless-sdks/octogen-api-python"
-Repository = "https://github.com/stainless-sdks/octogen-api-python"
+Homepage = "https://github.com/octogen-ai/octogen-py-api"
+Repository = "https://github.com/octogen-ai/octogen-py-api"
 
 
 [tool.rye]
@@ -121,7 +121,7 @@ path = "README.md"
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
 # replace relative links with absolute links
 pattern = '\[(.+?)\]\(((?!https?://)\S+?)\)'
-replacement = '[\1](https://github.com/stainless-sdks/octogen-api-python/tree/main/\g<2>)'
+replacement = '[\1](https://github.com/octogen-ai/octogen-py-api/tree/main/\g<2>)'
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
