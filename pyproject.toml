@@ -4,14 +4,16 @@ version = "0.1.0-alpha.5"
 description = "The official Python library for the octogen-api API"
 dynamic = ["readme"]
 license = "MIT"
-authors = [{ name = "Octogen API", email = "support@octogen.ai" }]
+authors = [
+{ name = "Octogen API", email = "" },
+]
 dependencies = [
-  "httpx>=0.23.0, <1",
-  "pydantic>=1.9.0, <3",
-  "typing-extensions>=4.10, <5",
-  "anyio>=3.5.0, <5",
-  "distro>=1.7.0, <2",
-  "sniffio",
+    "httpx>=0.23.0, <1",
+    "pydantic>=1.9.0, <3",
+    "typing-extensions>=4.10, <5",
+    "anyio>=3.5.0, <5",
+    "distro>=1.7.0, <2",
+    "sniffio",
 ]
 requires-python = ">= 3.8"
 classifiers = [
@@ -28,30 +30,30 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Operating System :: Microsoft :: Windows",
   "Topic :: Software Development :: Libraries :: Python Modules",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: MIT License"
 ]
 
 [project.urls]
-Homepage = "https://github.com/octogen-systems/octogen-py-api"
-Repository = "https://github.com/octogen-systems/octogen-py-api"
+Homepage = "https://github.com/octogen-ai/octogen-py-api"
+Repository = "https://github.com/octogen-ai/octogen-py-api"
 
 
 [tool.rye]
 managed = true
 # version pins are in requirements-dev.lock
 dev-dependencies = [
-  "pyright==1.1.399",
-  "mypy",
-  "respx",
-  "pytest",
-  "pytest-asyncio",
-  "ruff",
-  "time-machine",
-  "nox",
-  "dirty-equals>=0.6.0",
-  "importlib-metadata>=6.7.0",
-  "rich>=13.7.1",
-  "nest_asyncio==1.6.0",
+    "pyright==1.1.399",
+    "mypy",
+    "respx",
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+    "time-machine",
+    "nox",
+    "dirty-equals>=0.6.0",
+    "importlib-metadata>=6.7.0",
+    "rich>=13.7.1",
+    "nest_asyncio==1.6.0",
 ]
 
 [tool.rye.scripts]
@@ -61,17 +63,24 @@ format = { chain = [
   "fix:ruff",
   # run formatting again to fix any inconsistencies when imports are stripped
   "format:ruff",
-] }
+]}
 "format:docs" = "python scripts/utils/ruffen-docs.py README.md api.md"
 "format:ruff" = "ruff format"
 
-"lint" = { chain = ["check:ruff", "typecheck", "check:importable"] }
+"lint" = { chain = [
+  "check:ruff",
+  "typecheck",
+  "check:importable",
+]}
 "check:ruff" = "ruff check ."
 "fix:ruff" = "ruff check --fix ."
 
 "check:importable" = "python -c 'import octogen.api'"
 
-typecheck = { chain = ["typecheck:pyright", "typecheck:mypy"] }
+typecheck = { chain = [
+  "typecheck:pyright",
+  "typecheck:mypy"
+]}
 "typecheck:pyright" = "pyright"
 "typecheck:verify-types" = "pyright --verifytypes octogen.api --ignoreexternal"
 "typecheck:mypy" = "mypy ."
@@ -81,11 +90,12 @@ requires = ["hatchling==1.26.3", "hatch-fancy-pypi-readme"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-include = ["src/*"]
+include = [
+  "src/*"
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/octogen"]
-exclude = ["src/octogen/__init__.py"]
 
 [tool.hatch.build.targets.sdist]
 # Basically everything except hidden files/directories (such as .github, .devcontainers, .python-version, etc)
@@ -111,7 +121,7 @@ path = "README.md"
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
 # replace relative links with absolute links
 pattern = '\[(.+?)\]\(((?!https?://)\S+?)\)'
-replacement = '[\1](https://github.com/octogen-systems/octogen-py-api/tree/main/\g<2>)'
+replacement = '[\1](https://github.com/octogen-ai/octogen-py-api/tree/main/\g<2>)'
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -119,7 +129,9 @@ addopts = "--tb=short"
 xfail_strict = true
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
-filterwarnings = ["error"]
+filterwarnings = [
+  "error"
+]
 
 [tool.pyright]
 # this enables practically every flag given by pyright.
@@ -128,7 +140,11 @@ filterwarnings = ["error"]
 typeCheckingMode = "strict"
 pythonVersion = "3.8"
 
-exclude = ["_dev", ".venv", ".nox"]
+exclude = [
+    "_dev",
+    ".venv",
+    ".nox",
+]
 
 reportImplicitOverride = true
 reportOverlappingOverload = false

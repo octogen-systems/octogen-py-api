@@ -24,6 +24,7 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
+from ..types.facet_param import FacetParam
 from ..types.search_tool_output import SearchToolOutput
 from ..types.catalog_upload_file_response import CatalogUploadFileResponse
 
@@ -37,7 +38,7 @@ class CatalogResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/octogen-systems/octogen-py-api#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/octogen-ai/octogen-py-api#accessing-raw-response-data-eg-headers
         """
         return CatalogResourceWithRawResponse(self)
 
@@ -46,7 +47,7 @@ class CatalogResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/octogen-systems/octogen-py-api#with_streaming_response
+        For more information, see https://www.github.com/octogen-ai/octogen-py-api#with_streaming_response
         """
         return CatalogResourceWithStreamingResponse(self)
 
@@ -196,10 +197,14 @@ class CatalogResource(SyncAPIResource):
         self,
         *,
         text: str,
-        facets: Optional[Iterable[catalog_text_search_params.Facet]] | NotGiven = NOT_GIVEN,
+        exclusion_facets: Optional[Iterable[FacetParam]] | NotGiven = NOT_GIVEN,
+        facets: Optional[Iterable[FacetParam]] | NotGiven = NOT_GIVEN,
         limit: int | NotGiven = NOT_GIVEN,
         price_max: Optional[float] | NotGiven = NOT_GIVEN,
         price_min: Optional[float] | NotGiven = NOT_GIVEN,
+        ranking_embedding_column: str | NotGiven = NOT_GIVEN,
+        ranking_text: Optional[str] | NotGiven = NOT_GIVEN,
+        retrieval_embedding_column: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -218,6 +223,8 @@ class CatalogResource(SyncAPIResource):
           text: The text is converted to a vector embedding and used to search for products in
               the e-commerce catalog with pre-computed product embeddings.
 
+          exclusion_facets: Facets that will be excluded from the search results.
+
           facets: The search results will be filtered by the specified facets.
 
           limit: The maximum number of results to return from the search. The default is 10.
@@ -227,6 +234,12 @@ class CatalogResource(SyncAPIResource):
 
           price_min: The products will be filtered to have a price greater than or equal to the
               specified value.
+
+          ranking_embedding_column: The column to use for the ranking embedding. The default is 'embedding'.
+
+          ranking_text: The text is converted to a vector embedding and used to rank the search results.
+
+          retrieval_embedding_column: The column to use for the retrieval embedding. The default is 'embedding'.
 
           extra_headers: Send extra headers
 
@@ -241,10 +254,14 @@ class CatalogResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "text": text,
+                    "exclusion_facets": exclusion_facets,
                     "facets": facets,
                     "limit": limit,
                     "price_max": price_max,
                     "price_min": price_min,
+                    "ranking_embedding_column": ranking_embedding_column,
+                    "ranking_text": ranking_text,
+                    "retrieval_embedding_column": retrieval_embedding_column,
                 },
                 catalog_text_search_params.CatalogTextSearchParams,
             ),
@@ -305,7 +322,7 @@ class AsyncCatalogResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/octogen-systems/octogen-py-api#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/octogen-ai/octogen-py-api#accessing-raw-response-data-eg-headers
         """
         return AsyncCatalogResourceWithRawResponse(self)
 
@@ -314,7 +331,7 @@ class AsyncCatalogResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/octogen-systems/octogen-py-api#with_streaming_response
+        For more information, see https://www.github.com/octogen-ai/octogen-py-api#with_streaming_response
         """
         return AsyncCatalogResourceWithStreamingResponse(self)
 
@@ -464,10 +481,14 @@ class AsyncCatalogResource(AsyncAPIResource):
         self,
         *,
         text: str,
-        facets: Optional[Iterable[catalog_text_search_params.Facet]] | NotGiven = NOT_GIVEN,
+        exclusion_facets: Optional[Iterable[FacetParam]] | NotGiven = NOT_GIVEN,
+        facets: Optional[Iterable[FacetParam]] | NotGiven = NOT_GIVEN,
         limit: int | NotGiven = NOT_GIVEN,
         price_max: Optional[float] | NotGiven = NOT_GIVEN,
         price_min: Optional[float] | NotGiven = NOT_GIVEN,
+        ranking_embedding_column: str | NotGiven = NOT_GIVEN,
+        ranking_text: Optional[str] | NotGiven = NOT_GIVEN,
+        retrieval_embedding_column: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -486,6 +507,8 @@ class AsyncCatalogResource(AsyncAPIResource):
           text: The text is converted to a vector embedding and used to search for products in
               the e-commerce catalog with pre-computed product embeddings.
 
+          exclusion_facets: Facets that will be excluded from the search results.
+
           facets: The search results will be filtered by the specified facets.
 
           limit: The maximum number of results to return from the search. The default is 10.
@@ -495,6 +518,12 @@ class AsyncCatalogResource(AsyncAPIResource):
 
           price_min: The products will be filtered to have a price greater than or equal to the
               specified value.
+
+          ranking_embedding_column: The column to use for the ranking embedding. The default is 'embedding'.
+
+          ranking_text: The text is converted to a vector embedding and used to rank the search results.
+
+          retrieval_embedding_column: The column to use for the retrieval embedding. The default is 'embedding'.
 
           extra_headers: Send extra headers
 
@@ -509,10 +538,14 @@ class AsyncCatalogResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "text": text,
+                    "exclusion_facets": exclusion_facets,
                     "facets": facets,
                     "limit": limit,
                     "price_max": price_max,
                     "price_min": price_min,
+                    "ranking_embedding_column": ranking_embedding_column,
+                    "ranking_text": ranking_text,
+                    "retrieval_embedding_column": retrieval_embedding_column,
                 },
                 catalog_text_search_params.CatalogTextSearchParams,
             ),

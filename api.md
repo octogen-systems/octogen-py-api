@@ -11,6 +11,7 @@ from octogen.api.types import (
     Category,
     ColorInfo,
     ContextEnum,
+    Facet,
     FulfillmentInfo,
     Image,
     Offer,

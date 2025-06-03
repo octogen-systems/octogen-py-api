@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
-from typing import List, Iterable, Optional
-from typing_extensions import Literal, Required, TypedDict
+from typing import Iterable, Optional
+from typing_extensions import Required, TypedDict
 
-__all__ = ["CatalogTextSearchParams", "Facet"]
+from .facet_param import FacetParam
+
+__all__ = ["CatalogTextSearchParams"]
 
 
 class CatalogTextSearchParams(TypedDict, total=False):
@@ -15,7 +17,10 @@ class CatalogTextSearchParams(TypedDict, total=False):
     the e-commerce catalog with pre-computed product embeddings.
     """
 
-    facets: Optional[Iterable[Facet]]
+    exclusion_facets: Optional[Iterable[FacetParam]]
+    """Facets that will be excluded from the search results."""
+
+    facets: Optional[Iterable[FacetParam]]
     """The search results will be filtered by the specified facets."""
 
     limit: int
@@ -33,13 +38,13 @@ class CatalogTextSearchParams(TypedDict, total=False):
     specified value.
     """
 
+    ranking_embedding_column: str
+    """The column to use for the ranking embedding. The default is 'embedding'."""
 
-class Facet(TypedDict, total=False):
-    name: Required[Literal["brand_name", "product_type"]]
-
-    values: Required[List[str]]
-    """List of values to filter by.
-
-    They should all be lowercase. Facet values can be phrases, so make sure to
-    include the spaces.
+    ranking_text: Optional[str]
     """
+    The text is converted to a vector embedding and used to rank the search results.
+    """
+
+    retrieval_embedding_column: str
+    """The column to use for the retrieval embedding. The default is 'embedding'."""

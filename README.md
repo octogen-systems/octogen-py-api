@@ -32,7 +32,7 @@ client = OctogenAPI(
 )
 
 search_tool_output = client.catalog.agent_search(
-    text="Find me red shoes less than $200",
+    text="red shoes",
 )
 print(search_tool_output.products)
 ```
@@ -58,7 +58,7 @@ client = AsyncOctogenAPI(
 
 async def main() -> None:
     search_tool_output = await client.catalog.agent_search(
-        text="Find me red shoes less than $200",
+        text="red shoes",
     )
     print(search_tool_output.products)
 
@@ -111,7 +111,7 @@ client = OctogenAPI()
 
 try:
     client.catalog.agent_search(
-        text="Find me red shoes less than $200",
+        text="red shoes",
     )
 except octogen.api.APIConnectionError as e:
     print("The server could not be reached")
@@ -156,7 +156,7 @@ client = OctogenAPI(
 
 # Or, configure per-request:
 client.with_options(max_retries=5).catalog.agent_search(
-    text="Find me red shoes less than $200",
+    text="red shoes",
 )
 ```
 
@@ -181,7 +181,7 @@ client = OctogenAPI(
 
 # Override per-request:
 client.with_options(timeout=5.0).catalog.agent_search(
-    text="Find me red shoes less than $200",
+    text="red shoes",
 )
 ```
 
@@ -224,7 +224,7 @@ from octogen.api import OctogenAPI
 
 client = OctogenAPI()
 response = client.catalog.with_raw_response.agent_search(
-    text="Find me red shoes less than $200",
+    text="red shoes",
 )
 print(response.headers.get('X-My-Header'))
 
@@ -232,9 +232,9 @@ catalog = response.parse()  # get the object that `catalog.agent_search()` would
 print(catalog.products)
 ```
 
-These methods return an [`APIResponse`](https://github.com/octogen-systems/octogen-py-api/tree/main/src/octogen/api/_response.py) object.
+These methods return an [`APIResponse`](https://github.com/octogen-ai/octogen-py-api/tree/main/src/octogen/api/_response.py) object.
 
-The async client returns an [`AsyncAPIResponse`](https://github.com/octogen-systems/octogen-py-api/tree/main/src/octogen/api/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
+The async client returns an [`AsyncAPIResponse`](https://github.com/octogen-ai/octogen-py-api/tree/main/src/octogen/api/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
 
 #### `.with_streaming_response`
 
@@ -244,7 +244,7 @@ To stream the response body, use `.with_streaming_response` instead, which requi
 
 ```python
 with client.catalog.with_streaming_response.agent_search(
-    text="Find me red shoes less than $200",
+    text="red shoes",
 ) as response:
     print(response.headers.get("X-My-Header"))
 
@@ -340,7 +340,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/octogen-systems/octogen-py-api/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/octogen-ai/octogen-py-api/issues) with questions, bugs, or suggestions.
 
 ### Determining the installed version
 

@@ -170,6 +170,12 @@ class TestCatalog:
     def test_method_text_search_with_all_params(self, client: OctogenAPI) -> None:
         catalog = client.catalog.text_search(
             text="text",
+            exclusion_facets=[
+                {
+                    "name": "brand_name",
+                    "values": ["string"],
+                }
+            ],
             facets=[
                 {
                     "name": "brand_name",
@@ -179,6 +185,9 @@ class TestCatalog:
             limit=0,
             price_max=0,
             price_min=0,
+            ranking_embedding_column="ranking_embedding_column",
+            ranking_text="ranking_text",
+            retrieval_embedding_column="retrieval_embedding_column",
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
@@ -396,6 +405,12 @@ class TestAsyncCatalog:
     async def test_method_text_search_with_all_params(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.text_search(
             text="text",
+            exclusion_facets=[
+                {
+                    "name": "brand_name",
+                    "values": ["string"],
+                }
+            ],
             facets=[
                 {
                     "name": "brand_name",
@@ -405,6 +420,9 @@ class TestAsyncCatalog:
             limit=0,
             price_max=0,
             price_min=0,
+            ranking_embedding_column="ranking_embedding_column",
+            ranking_text="ranking_text",
+            retrieval_embedding_column="retrieval_embedding_column",
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
