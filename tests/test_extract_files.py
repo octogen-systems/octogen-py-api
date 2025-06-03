@@ -4,8 +4,8 @@ from typing import Sequence
 
 import pytest
 
-from octogen.api._types import FileTypes
-from octogen.api._utils import extract_files
+from octogen_api._types import FileTypes
+from octogen_api._utils import extract_files
 
 
 def test_removes_files_from_input() -> None:

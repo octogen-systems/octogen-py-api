@@ -21,22 +21,24 @@ import pytest
 from respx import MockRouter
 from pydantic import ValidationError
 
-from octogen.api import OctogenAPI, AsyncOctogenAPI, APIResponseValidationError
-from octogen.api._types import Omit
-from octogen.api._models import BaseModel, FinalRequestOptions
-from octogen.api._constants import RAW_RESPONSE_HEADER
-from octogen.api._exceptions import APIStatusError, APITimeoutError, OctogenAPIError, APIResponseValidationError
-from octogen.api._base_client import (
+from octogen_api import OctogenAPI, AsyncOctogenAPI, APIResponseValidationError
+from octogen_api._types import Omit
+from octogen_api._utils import maybe_transform
+from octogen_api._models import BaseModel, FinalRequestOptions
+from octogen_api._constants import RAW_RESPONSE_HEADER
+from octogen_api._exceptions import APIStatusError, APITimeoutError, APIResponseValidationError
+from octogen_api._base_client import (
     DEFAULT_TIMEOUT,
     HTTPX_DEFAULT_TIMEOUT,
     BaseClient,
     make_request_options,
 )
+from octogen_api.types.catalog_text_search_params import CatalogTextSearchParams
 
 from .utils import update_env
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
-octogen_api_key = "My Octogen API Key"
+api_key = "My API Key"
 
 
 def _get_params(client: BaseClient[Any, Any]) -> dict[str, str]:
@@ -58,7 +60,7 @@ def _get_open_connections(client: OctogenAPI | AsyncOctogenAPI) -> int:
 
 
 class TestOctogenAPI:
-    client = OctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+    client = OctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
     @pytest.mark.respx(base_url=base_url)
     def test_raw_response(self, respx_mock: MockRouter) -> None:
@@ -84,9 +86,9 @@ class TestOctogenAPI:
         copied = self.client.copy()
         assert id(copied) != id(self.client)
 
-        copied = self.client.copy(octogen_api_key="another My Octogen API Key")
-        assert copied.octogen_api_key == "another My Octogen API Key"
-        assert self.client.octogen_api_key == "My Octogen API Key"
+        copied = self.client.copy(api_key="another My API Key")
+        assert copied.api_key == "another My API Key"
+        assert self.client.api_key == "My API Key"
 
     def test_copy_default_options(self) -> None:
         # options that have a default are overridden correctly
@@ -106,10 +108,7 @@ class TestOctogenAPI:
 
     def test_copy_default_headers(self) -> None:
         client = OctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            default_headers={"X-Foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
         )
         assert client.default_headers["X-Foo"] == "bar"
 
@@ -143,10 +142,7 @@ class TestOctogenAPI:
 
     def test_copy_default_query(self) -> None:
         client = OctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            default_query={"foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_query={"foo": "bar"}
         )
         assert _get_params(client)["foo"] == "bar"
 
@@ -236,10 +232,10 @@ class TestOctogenAPI:
                         # to_raw_response_wrapper leaks through the @functools.wraps() decorator.
                         #
                         # removing the decorator fixes the leak for reasons we don't understand.
-                        "octogen/api/_legacy_response.py",
-                        "octogen/api/_response.py",
+                        "octogen_api/_legacy_response.py",
+                        "octogen_api/_response.py",
                         # pydantic.BaseModel.model_dump || pydantic.BaseModel.dict leak memory for some reason.
-                        "octogen/api/_compat.py",
+                        "octogen_api/_compat.py",
                         # Standard library leaks we don't care about.
                         "/logging/__init__.py",
                     ]
@@ -271,10 +267,7 @@ class TestOctogenAPI:
 
     def test_client_timeout_option(self) -> None:
         client = OctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            timeout=httpx.Timeout(0),
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, timeout=httpx.Timeout(0)
         )
 
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -285,10 +278,7 @@ class TestOctogenAPI:
         # custom timeout given to the httpx client should be used
         with httpx.Client(timeout=None) as http_client:
             client = OctogenAPI(
-                base_url=base_url,
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -298,10 +288,7 @@ class TestOctogenAPI:
         # no timeout given to the httpx client should not use the httpx default
         with httpx.Client() as http_client:
             client = OctogenAPI(
-                base_url=base_url,
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -311,10 +298,7 @@ class TestOctogenAPI:
         # explicitly passing the default timeout currently results in it being ignored
         with httpx.Client(timeout=HTTPX_DEFAULT_TIMEOUT) as http_client:
             client = OctogenAPI(
-                base_url=base_url,
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -326,17 +310,14 @@ class TestOctogenAPI:
             async with httpx.AsyncClient() as http_client:
                 OctogenAPI(
                     base_url=base_url,
-                    octogen_api_key=octogen_api_key,
+                    api_key=api_key,
                     _strict_response_validation=True,
                     http_client=cast(Any, http_client),
                 )
 
     def test_default_headers_option(self) -> None:
         client = OctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            default_headers={"X-Foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
         )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "bar"
@@ -344,7 +325,7 @@ class TestOctogenAPI:
 
         client2 = OctogenAPI(
             base_url=base_url,
-            octogen_api_key=octogen_api_key,
+            api_key=api_key,
             _strict_response_validation=True,
             default_headers={
                 "X-Foo": "stainless",
@@ -356,21 +337,27 @@ class TestOctogenAPI:
         assert request.headers.get("x-stainless-lang") == "my-overriding-header"
 
     def test_validate_headers(self) -> None:
-        client = OctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        client = OctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
-        assert request.headers.get("x-api-key") == octogen_api_key
+        assert request.headers.get("Authorization") == f"Bearer {api_key}"
 
-        with pytest.raises(OctogenAPIError):
-            with update_env(**{"OCTOGEN_API_KEY": Omit()}):
-                client2 = OctogenAPI(base_url=base_url, octogen_api_key=None, _strict_response_validation=True)
-            _ = client2
+        with update_env(**{"OCTOGEN_API_API_KEY": Omit()}):
+            client2 = OctogenAPI(base_url=base_url, api_key=None, _strict_response_validation=True)
+
+        with pytest.raises(
+            TypeError,
+            match="Could not resolve authentication method. Expected the api_key to be set. Or for the `Authorization` headers to be explicitly omitted",
+        ):
+            client2._build_request(FinalRequestOptions(method="get", url="/foo"))
+
+        request2 = client2._build_request(
+            FinalRequestOptions(method="get", url="/foo", headers={"Authorization": Omit()})
+        )
+        assert request2.headers.get("Authorization") is None
 
     def test_default_query_option(self) -> None:
         client = OctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            default_query={"query_param": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_query={"query_param": "bar"}
         )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         url = httpx.URL(request.url)
@@ -570,9 +557,7 @@ class TestOctogenAPI:
         assert response.foo == 2
 
     def test_base_url_setter(self) -> None:
-        client = OctogenAPI(
-            base_url="https://example.com/from_init", octogen_api_key=octogen_api_key, _strict_response_validation=True
-        )
+        client = OctogenAPI(base_url="https://example.com/from_init", api_key=api_key, _strict_response_validation=True)
         assert client.base_url == "https://example.com/from_init/"
 
         client.base_url = "https://example.com/from_setter"  # type: ignore[assignment]
@@ -581,20 +566,18 @@ class TestOctogenAPI:
 
     def test_base_url_env(self) -> None:
         with update_env(OCTOGEN_API_BASE_URL="http://localhost:5000/from/env"):
-            client = OctogenAPI(octogen_api_key=octogen_api_key, _strict_response_validation=True)
+            client = OctogenAPI(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
     @pytest.mark.parametrize(
         "client",
         [
             OctogenAPI(
-                base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             OctogenAPI(
                 base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
+                api_key=api_key,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -615,13 +598,11 @@ class TestOctogenAPI:
         "client",
         [
             OctogenAPI(
-                base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             OctogenAPI(
                 base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
+                api_key=api_key,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -642,13 +623,11 @@ class TestOctogenAPI:
         "client",
         [
             OctogenAPI(
-                base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             OctogenAPI(
                 base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
+                api_key=api_key,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -666,7 +645,7 @@ class TestOctogenAPI:
         assert request.url == "https://myapi.com/foo"
 
     def test_copied_client_does_not_close_http(self) -> None:
-        client = OctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        client = OctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         assert not client.is_closed()
 
         copied = client.copy()
@@ -677,7 +656,7 @@ class TestOctogenAPI:
         assert not client.is_closed()
 
     def test_client_context_manager(self) -> None:
-        client = OctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        client = OctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         with client as c2:
             assert c2 is client
             assert not c2.is_closed()
@@ -699,10 +678,7 @@ class TestOctogenAPI:
     def test_client_max_retries_validation(self) -> None:
         with pytest.raises(TypeError, match=r"max_retries cannot be None"):
             OctogenAPI(
-                base_url=base_url,
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
-                max_retries=cast(Any, None),
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, max_retries=cast(Any, None)
             )
 
     @pytest.mark.respx(base_url=base_url)
@@ -712,12 +688,12 @@ class TestOctogenAPI:
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = OctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        strict_client = OctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             strict_client.get("/foo", cast_to=Model)
 
-        client = OctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=False)
+        client = OctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=False)
 
         response = client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -745,39 +721,45 @@ class TestOctogenAPI:
     )
     @mock.patch("time.time", mock.MagicMock(return_value=1696004797))
     def test_parse_retry_after_header(self, remaining_retries: int, retry_after: str, timeout: float) -> None:
-        client = OctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        client = OctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         headers = httpx.Headers({"retry-after": retry_after})
         options = FinalRequestOptions(method="get", url="/foo", max_retries=3)
         calculated = client._calculate_retry_timeout(remaining_retries, options, headers)
         assert calculated == pytest.approx(timeout, 0.5 * 0.875)  # pyright: ignore[reportUnknownMemberType]
 
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.get("/catalog/agent_search").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.post("/catalog/text_search").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            self.client.get(
-                "/catalog/agent_search", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
+            self.client.post(
+                "/catalog/text_search",
+                body=cast(object, maybe_transform(dict(text="text"), CatalogTextSearchParams)),
+                cast_to=httpx.Response,
+                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
             )
 
         assert _get_open_connections(self.client) == 0
 
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.get("/catalog/agent_search").mock(return_value=httpx.Response(500))
+        respx_mock.post("/catalog/text_search").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            self.client.get(
-                "/catalog/agent_search", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
+            self.client.post(
+                "/catalog/text_search",
+                body=cast(object, maybe_transform(dict(text="text"), CatalogTextSearchParams)),
+                cast_to=httpx.Response,
+                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
             )
 
         assert _get_open_connections(self.client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     @pytest.mark.parametrize("failure_mode", ["status", "exception"])
     def test_retries_taken(
@@ -800,15 +782,15 @@ class TestOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
+        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
 
-        response = client.catalog.with_raw_response.agent_search(text="text")
+        response = client.catalog.with_raw_response.text_search(text="text")
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_omit_retry_count_header(
         self, client: OctogenAPI, failures_before_success: int, respx_mock: MockRouter
@@ -824,16 +806,16 @@ class TestOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
+        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
 
-        response = client.catalog.with_raw_response.agent_search(
+        response = client.catalog.with_raw_response.text_search(
             text="text", extra_headers={"x-stainless-retry-count": Omit()}
         )
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_overwrite_retry_count_header(
         self, client: OctogenAPI, failures_before_success: int, respx_mock: MockRouter
@@ -849,17 +831,44 @@ class TestOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
+        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
 
-        response = client.catalog.with_raw_response.agent_search(
+        response = client.catalog.with_raw_response.text_search(
             text="text", extra_headers={"x-stainless-retry-count": "42"}
         )
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 
+    @pytest.mark.respx(base_url=base_url)
+    def test_follow_redirects(self, respx_mock: MockRouter) -> None:
+        # Test that the default follow_redirects=True allows following redirects
+        respx_mock.post("/redirect").mock(
+            return_value=httpx.Response(302, headers={"Location": f"{base_url}/redirected"})
+        )
+        respx_mock.get("/redirected").mock(return_value=httpx.Response(200, json={"status": "ok"}))
+
+        response = self.client.post("/redirect", body={"key": "value"}, cast_to=httpx.Response)
+        assert response.status_code == 200
+        assert response.json() == {"status": "ok"}
+
+    @pytest.mark.respx(base_url=base_url)
+    def test_follow_redirects_disabled(self, respx_mock: MockRouter) -> None:
+        # Test that follow_redirects=False prevents following redirects
+        respx_mock.post("/redirect").mock(
+            return_value=httpx.Response(302, headers={"Location": f"{base_url}/redirected"})
+        )
+
+        with pytest.raises(APIStatusError) as exc_info:
+            self.client.post(
+                "/redirect", body={"key": "value"}, options={"follow_redirects": False}, cast_to=httpx.Response
+            )
+
+        assert exc_info.value.response.status_code == 302
+        assert exc_info.value.response.headers["Location"] == f"{base_url}/redirected"
+
 
 class TestAsyncOctogenAPI:
-    client = AsyncOctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+    client = AsyncOctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
     @pytest.mark.respx(base_url=base_url)
     @pytest.mark.asyncio
@@ -887,9 +896,9 @@ class TestAsyncOctogenAPI:
         copied = self.client.copy()
         assert id(copied) != id(self.client)
 
-        copied = self.client.copy(octogen_api_key="another My Octogen API Key")
-        assert copied.octogen_api_key == "another My Octogen API Key"
-        assert self.client.octogen_api_key == "My Octogen API Key"
+        copied = self.client.copy(api_key="another My API Key")
+        assert copied.api_key == "another My API Key"
+        assert self.client.api_key == "My API Key"
 
     def test_copy_default_options(self) -> None:
         # options that have a default are overridden correctly
@@ -909,10 +918,7 @@ class TestAsyncOctogenAPI:
 
     def test_copy_default_headers(self) -> None:
         client = AsyncOctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            default_headers={"X-Foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
         )
         assert client.default_headers["X-Foo"] == "bar"
 
@@ -946,10 +952,7 @@ class TestAsyncOctogenAPI:
 
     def test_copy_default_query(self) -> None:
         client = AsyncOctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            default_query={"foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_query={"foo": "bar"}
         )
         assert _get_params(client)["foo"] == "bar"
 
@@ -1039,10 +1042,10 @@ class TestAsyncOctogenAPI:
                         # to_raw_response_wrapper leaks through the @functools.wraps() decorator.
                         #
                         # removing the decorator fixes the leak for reasons we don't understand.
-                        "octogen/api/_legacy_response.py",
-                        "octogen/api/_response.py",
+                        "octogen_api/_legacy_response.py",
+                        "octogen_api/_response.py",
                         # pydantic.BaseModel.model_dump || pydantic.BaseModel.dict leak memory for some reason.
-                        "octogen/api/_compat.py",
+                        "octogen_api/_compat.py",
                         # Standard library leaks we don't care about.
                         "/logging/__init__.py",
                     ]
@@ -1074,10 +1077,7 @@ class TestAsyncOctogenAPI:
 
     async def test_client_timeout_option(self) -> None:
         client = AsyncOctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            timeout=httpx.Timeout(0),
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, timeout=httpx.Timeout(0)
         )
 
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -1088,10 +1088,7 @@ class TestAsyncOctogenAPI:
         # custom timeout given to the httpx client should be used
         async with httpx.AsyncClient(timeout=None) as http_client:
             client = AsyncOctogenAPI(
-                base_url=base_url,
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -1101,10 +1098,7 @@ class TestAsyncOctogenAPI:
         # no timeout given to the httpx client should not use the httpx default
         async with httpx.AsyncClient() as http_client:
             client = AsyncOctogenAPI(
-                base_url=base_url,
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -1114,10 +1108,7 @@ class TestAsyncOctogenAPI:
         # explicitly passing the default timeout currently results in it being ignored
         async with httpx.AsyncClient(timeout=HTTPX_DEFAULT_TIMEOUT) as http_client:
             client = AsyncOctogenAPI(
-                base_url=base_url,
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -1129,17 +1120,14 @@ class TestAsyncOctogenAPI:
             with httpx.Client() as http_client:
                 AsyncOctogenAPI(
                     base_url=base_url,
-                    octogen_api_key=octogen_api_key,
+                    api_key=api_key,
                     _strict_response_validation=True,
                     http_client=cast(Any, http_client),
                 )
 
     def test_default_headers_option(self) -> None:
         client = AsyncOctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            default_headers={"X-Foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
         )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "bar"
@@ -1147,7 +1135,7 @@ class TestAsyncOctogenAPI:
 
         client2 = AsyncOctogenAPI(
             base_url=base_url,
-            octogen_api_key=octogen_api_key,
+            api_key=api_key,
             _strict_response_validation=True,
             default_headers={
                 "X-Foo": "stainless",
@@ -1159,21 +1147,27 @@ class TestAsyncOctogenAPI:
         assert request.headers.get("x-stainless-lang") == "my-overriding-header"
 
     def test_validate_headers(self) -> None:
-        client = AsyncOctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        client = AsyncOctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
-        assert request.headers.get("x-api-key") == octogen_api_key
+        assert request.headers.get("Authorization") == f"Bearer {api_key}"
 
-        with pytest.raises(OctogenAPIError):
-            with update_env(**{"OCTOGEN_API_KEY": Omit()}):
-                client2 = AsyncOctogenAPI(base_url=base_url, octogen_api_key=None, _strict_response_validation=True)
-            _ = client2
+        with update_env(**{"OCTOGEN_API_API_KEY": Omit()}):
+            client2 = AsyncOctogenAPI(base_url=base_url, api_key=None, _strict_response_validation=True)
+
+        with pytest.raises(
+            TypeError,
+            match="Could not resolve authentication method. Expected the api_key to be set. Or for the `Authorization` headers to be explicitly omitted",
+        ):
+            client2._build_request(FinalRequestOptions(method="get", url="/foo"))
+
+        request2 = client2._build_request(
+            FinalRequestOptions(method="get", url="/foo", headers={"Authorization": Omit()})
+        )
+        assert request2.headers.get("Authorization") is None
 
     def test_default_query_option(self) -> None:
         client = AsyncOctogenAPI(
-            base_url=base_url,
-            octogen_api_key=octogen_api_key,
-            _strict_response_validation=True,
-            default_query={"query_param": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_query={"query_param": "bar"}
         )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         url = httpx.URL(request.url)
@@ -1374,7 +1368,7 @@ class TestAsyncOctogenAPI:
 
     def test_base_url_setter(self) -> None:
         client = AsyncOctogenAPI(
-            base_url="https://example.com/from_init", octogen_api_key=octogen_api_key, _strict_response_validation=True
+            base_url="https://example.com/from_init", api_key=api_key, _strict_response_validation=True
         )
         assert client.base_url == "https://example.com/from_init/"
 
@@ -1384,20 +1378,18 @@ class TestAsyncOctogenAPI:
 
     def test_base_url_env(self) -> None:
         with update_env(OCTOGEN_API_BASE_URL="http://localhost:5000/from/env"):
-            client = AsyncOctogenAPI(octogen_api_key=octogen_api_key, _strict_response_validation=True)
+            client = AsyncOctogenAPI(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
     @pytest.mark.parametrize(
         "client",
         [
             AsyncOctogenAPI(
-                base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             AsyncOctogenAPI(
                 base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
+                api_key=api_key,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1418,13 +1410,11 @@ class TestAsyncOctogenAPI:
         "client",
         [
             AsyncOctogenAPI(
-                base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             AsyncOctogenAPI(
                 base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
+                api_key=api_key,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1445,13 +1435,11 @@ class TestAsyncOctogenAPI:
         "client",
         [
             AsyncOctogenAPI(
-                base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             AsyncOctogenAPI(
                 base_url="http://localhost:5000/custom/path/",
-                octogen_api_key=octogen_api_key,
+                api_key=api_key,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1469,7 +1457,7 @@ class TestAsyncOctogenAPI:
         assert request.url == "https://myapi.com/foo"
 
     async def test_copied_client_does_not_close_http(self) -> None:
-        client = AsyncOctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        client = AsyncOctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         assert not client.is_closed()
 
         copied = client.copy()
@@ -1481,7 +1469,7 @@ class TestAsyncOctogenAPI:
         assert not client.is_closed()
 
     async def test_client_context_manager(self) -> None:
-        client = AsyncOctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        client = AsyncOctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         async with client as c2:
             assert c2 is client
             assert not c2.is_closed()
@@ -1504,10 +1492,7 @@ class TestAsyncOctogenAPI:
     async def test_client_max_retries_validation(self) -> None:
         with pytest.raises(TypeError, match=r"max_retries cannot be None"):
             AsyncOctogenAPI(
-                base_url=base_url,
-                octogen_api_key=octogen_api_key,
-                _strict_response_validation=True,
-                max_retries=cast(Any, None),
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, max_retries=cast(Any, None)
             )
 
     @pytest.mark.respx(base_url=base_url)
@@ -1518,14 +1503,12 @@ class TestAsyncOctogenAPI:
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = AsyncOctogenAPI(
-            base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True
-        )
+        strict_client = AsyncOctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             await strict_client.get("/foo", cast_to=Model)
 
-        client = AsyncOctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=False)
+        client = AsyncOctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=False)
 
         response = await client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -1554,39 +1537,45 @@ class TestAsyncOctogenAPI:
     @mock.patch("time.time", mock.MagicMock(return_value=1696004797))
     @pytest.mark.asyncio
     async def test_parse_retry_after_header(self, remaining_retries: int, retry_after: str, timeout: float) -> None:
-        client = AsyncOctogenAPI(base_url=base_url, octogen_api_key=octogen_api_key, _strict_response_validation=True)
+        client = AsyncOctogenAPI(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         headers = httpx.Headers({"retry-after": retry_after})
         options = FinalRequestOptions(method="get", url="/foo", max_retries=3)
         calculated = client._calculate_retry_timeout(remaining_retries, options, headers)
         assert calculated == pytest.approx(timeout, 0.5 * 0.875)  # pyright: ignore[reportUnknownMemberType]
 
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     async def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.get("/catalog/agent_search").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.post("/catalog/text_search").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            await self.client.get(
-                "/catalog/agent_search", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
+            await self.client.post(
+                "/catalog/text_search",
+                body=cast(object, maybe_transform(dict(text="text"), CatalogTextSearchParams)),
+                cast_to=httpx.Response,
+                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
             )
 
         assert _get_open_connections(self.client) == 0
 
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     async def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.get("/catalog/agent_search").mock(return_value=httpx.Response(500))
+        respx_mock.post("/catalog/text_search").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            await self.client.get(
-                "/catalog/agent_search", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
+            await self.client.post(
+                "/catalog/text_search",
+                body=cast(object, maybe_transform(dict(text="text"), CatalogTextSearchParams)),
+                cast_to=httpx.Response,
+                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
             )
 
         assert _get_open_connections(self.client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     @pytest.mark.asyncio
     @pytest.mark.parametrize("failure_mode", ["status", "exception"])
@@ -1610,15 +1599,15 @@ class TestAsyncOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
+        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
 
-        response = await client.catalog.with_raw_response.agent_search(text="text")
+        response = await client.catalog.with_raw_response.text_search(text="text")
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     @pytest.mark.asyncio
     async def test_omit_retry_count_header(
@@ -1635,16 +1624,16 @@ class TestAsyncOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
+        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
 
-        response = await client.catalog.with_raw_response.agent_search(
+        response = await client.catalog.with_raw_response.text_search(
             text="text", extra_headers={"x-stainless-retry-count": Omit()}
         )
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
-    @mock.patch("octogen.api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
+    @mock.patch("octogen_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     @pytest.mark.asyncio
     async def test_overwrite_retry_count_header(
@@ -1661,9 +1650,9 @@ class TestAsyncOctogenAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/catalog/agent_search").mock(side_effect=retry_handler)
+        respx_mock.post("/catalog/text_search").mock(side_effect=retry_handler)
 
-        response = await client.catalog.with_raw_response.agent_search(
+        response = await client.catalog.with_raw_response.text_search(
             text="text", extra_headers={"x-stainless-retry-count": "42"}
         )
 
@@ -1680,8 +1669,8 @@ class TestAsyncOctogenAPI:
         import nest_asyncio
         import threading
 
-        from octogen.api._utils import asyncify
-        from octogen.api._base_client import get_platform
+        from octogen_api._utils import asyncify
+        from octogen_api._base_client import get_platform
 
         async def test_main() -> None:
             result = await asyncify(get_platform)()
@@ -1713,3 +1702,30 @@ class TestAsyncOctogenAPI:
                     raise AssertionError("calling get_platform using asyncify resulted in a hung process")
 
                 time.sleep(0.1)
+
+    @pytest.mark.respx(base_url=base_url)
+    async def test_follow_redirects(self, respx_mock: MockRouter) -> None:
+        # Test that the default follow_redirects=True allows following redirects
+        respx_mock.post("/redirect").mock(
+            return_value=httpx.Response(302, headers={"Location": f"{base_url}/redirected"})
+        )
+        respx_mock.get("/redirected").mock(return_value=httpx.Response(200, json={"status": "ok"}))
+
+        response = await self.client.post("/redirect", body={"key": "value"}, cast_to=httpx.Response)
+        assert response.status_code == 200
+        assert response.json() == {"status": "ok"}
+
+    @pytest.mark.respx(base_url=base_url)
+    async def test_follow_redirects_disabled(self, respx_mock: MockRouter) -> None:
+        # Test that follow_redirects=False prevents following redirects
+        respx_mock.post("/redirect").mock(
+            return_value=httpx.Response(302, headers={"Location": f"{base_url}/redirected"})
+        )
+
+        with pytest.raises(APIStatusError) as exc_info:
+            await self.client.post(
+                "/redirect", body={"key": "value"}, options={"follow_redirects": False}, cast_to=httpx.Response
+            )
+
+        assert exc_info.value.response.status_code == 302
+        assert exc_info.value.response.headers["Location"] == f"{base_url}/redirected"

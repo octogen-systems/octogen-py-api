@@ -389,7 +389,7 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
 
         if max_retries is None:  # pyright: ignore[reportUnnecessaryComparison]
             raise TypeError(
-                "max_retries cannot be None. If you want to disable retries, pass `0`; if you want unlimited retries, pass `math.inf` or a very high number; if you want the default behavior, pass `octogen.api.DEFAULT_MAX_RETRIES`"
+                "max_retries cannot be None. If you want to disable retries, pass `0`; if you want unlimited retries, pass `math.inf` or a very high number; if you want the default behavior, pass `octogen_api.DEFAULT_MAX_RETRIES`"
             )
 
     def _enforce_trailing_slash(self, url: URL) -> URL:
@@ -960,6 +960,9 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
             if self.custom_auth is not None:
                 kwargs["auth"] = self.custom_auth
 
+            if options.follow_redirects is not None:
+                kwargs["follow_redirects"] = options.follow_redirects
+
             log.debug("Sending HTTP Request: %s %s", request.method, request.url)
 
             response = None
@@ -1459,6 +1462,9 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
             kwargs: HttpxSendArgs = {}
             if self.custom_auth is not None:
                 kwargs["auth"] = self.custom_auth
+
+            if options.follow_redirects is not None:
+                kwargs["follow_redirects"] = options.follow_redirects
 
             log.debug("Sending HTTP Request: %s %s", request.method, request.url)
 

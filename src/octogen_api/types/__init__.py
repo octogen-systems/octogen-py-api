@@ -12,6 +12,7 @@ from .audience import Audience as Audience
 from .category import Category as Category
 from .promotion import Promotion as Promotion
 from .color_info import ColorInfo as ColorInfo
+from .facet_param import FacetParam as FacetParam
 from .context_enum import ContextEnum as ContextEnum
 from .organization import Organization as Organization
 from .video_object import VideoObject as VideoObject

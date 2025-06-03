@@ -1,6 +1,6 @@
 # Octogen API Python API library
 
-[![PyPI version](https://img.shields.io/pypi/v/octogen-api.svg)](https://pypi.org/project/octogen-api/)
+[![PyPI version](https://img.shields.io/pypi/v/octogen_api.svg)](https://pypi.org/project/octogen_api/)
 
 The Octogen API Python library provides convenient access to the Octogen API REST API from any Python 3.8+
 application. The library includes type definitions for all request params and response fields,
@@ -10,14 +10,17 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Documentation
 
-The REST API documentation can be found on [docs.octogen.ai](https://docs.octogen.ai). The full API of this library can be found in [api.md](api.md).
+The full API of this library can be found in [api.md](api.md).
 
 ## Installation
 
 ```sh
-# install from PyPI
-pip install --pre octogen-api
+# install from this staging repo
+pip install git+ssh://git@github.com/stainless-sdks/octogen-api-python.git
 ```
+
+> [!NOTE]
+> Once this package is [published to PyPI](https://app.stainless.com/docs/guides/publish), this will become: `pip install --pre octogen_api`
 
 ## Usage
 
@@ -25,22 +28,22 @@ The full API of this library can be found in [api.md](api.md).
 
 ```python
 import os
-from octogen.api import OctogenAPI
+from octogen_api import OctogenAPI
 
 client = OctogenAPI(
-    octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
+    api_key=os.environ.get("OCTOGEN_API_API_KEY"),  # This is the default and can be omitted
 )
 
-search_tool_output = client.catalog.agent_search(
-    text="Find me red shoes less than $200",
+search_tool_output = client.catalog.text_search(
+    text="text",
 )
 print(search_tool_output.products)
 ```
 
-While you can provide a `octogen_api_key` keyword argument,
+While you can provide an `api_key` keyword argument,
 we recommend using [python-dotenv](https://pypi.org/project/python-dotenv/)
-to add `OCTOGEN_API_KEY="My Octogen API Key"` to your `.env` file
-so that your Octogen API Key is not stored in source control.
+to add `OCTOGEN_API_API_KEY="My API Key"` to your `.env` file
+so that your API Key is not stored in source control.
 
 ## Async usage
 
@@ -49,16 +52,16 @@ Simply import `AsyncOctogenAPI` instead of `OctogenAPI` and use `await` with eac
 ```python
 import os
 import asyncio
-from octogen.api import AsyncOctogenAPI
+from octogen_api import AsyncOctogenAPI
 
 client = AsyncOctogenAPI(
-    octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
+    api_key=os.environ.get("OCTOGEN_API_API_KEY"),  # This is the default and can be omitted
 )
 
 
 async def main() -> None:
-    search_tool_output = await client.catalog.agent_search(
-        text="Find me red shoes less than $200",
+    search_tool_output = await client.catalog.text_search(
+        text="text",
     )
     print(search_tool_output.products)
 
@@ -83,7 +86,7 @@ Request parameters that correspond to file uploads can be passed as `bytes`, or 
 
 ```python
 from pathlib import Path
-from octogen.api import OctogenAPI
+from octogen_api import OctogenAPI
 
 client = OctogenAPI()
 
@@ -96,29 +99,29 @@ The async client uses the exact same interface. If you pass a [`PathLike`](https
 
 ## Handling errors
 
-When the library is unable to connect to the API (for example, due to network connection problems or a timeout), a subclass of `octogen.api.APIConnectionError` is raised.
+When the library is unable to connect to the API (for example, due to network connection problems or a timeout), a subclass of `octogen_api.APIConnectionError` is raised.
 
 When the API returns a non-success status code (that is, 4xx or 5xx
-response), a subclass of `octogen.api.APIStatusError` is raised, containing `status_code` and `response` properties.
+response), a subclass of `octogen_api.APIStatusError` is raised, containing `status_code` and `response` properties.
 
-All errors inherit from `octogen.api.APIError`.
+All errors inherit from `octogen_api.APIError`.
 
 ```python
-import octogen.api
-from octogen.api import OctogenAPI
+import octogen_api
+from octogen_api import OctogenAPI
 
 client = OctogenAPI()
 
 try:
-    client.catalog.agent_search(
-        text="Find me red shoes less than $200",
+    client.catalog.text_search(
+        text="text",
     )
-except octogen.api.APIConnectionError as e:
+except octogen_api.APIConnectionError as e:
     print("The server could not be reached")
     print(e.__cause__)  # an underlying Exception, likely raised within httpx.
-except octogen.api.RateLimitError as e:
+except octogen_api.RateLimitError as e:
     print("A 429 status code was received; we should back off a bit.")
-except octogen.api.APIStatusError as e:
+except octogen_api.APIStatusError as e:
     print("Another non-200-range status code was received")
     print(e.status_code)
     print(e.response)
@@ -146,7 +149,7 @@ Connection errors (for example, due to a network connectivity problem), 408 Requ
 You can use the `max_retries` option to configure or disable retry settings:
 
 ```python
-from octogen.api import OctogenAPI
+from octogen_api import OctogenAPI
 
 # Configure the default for all requests:
 client = OctogenAPI(
@@ -155,8 +158,8 @@ client = OctogenAPI(
 )
 
 # Or, configure per-request:
-client.with_options(max_retries=5).catalog.agent_search(
-    text="Find me red shoes less than $200",
+client.with_options(max_retries=5).catalog.text_search(
+    text="text",
 )
 ```
 
@@ -166,7 +169,7 @@ By default requests time out after 1 minute. You can configure this with a `time
 which accepts a float or an [`httpx.Timeout`](https://www.python-httpx.org/advanced/#fine-tuning-the-configuration) object:
 
 ```python
-from octogen.api import OctogenAPI
+from octogen_api import OctogenAPI
 
 # Configure the default for all requests:
 client = OctogenAPI(
@@ -180,8 +183,8 @@ client = OctogenAPI(
 )
 
 # Override per-request:
-client.with_options(timeout=5.0).catalog.agent_search(
-    text="Find me red shoes less than $200",
+client.with_options(timeout=5.0).catalog.text_search(
+    text="text",
 )
 ```
 
@@ -220,21 +223,21 @@ if response.my_field is None:
 The "raw" Response object can be accessed by prefixing `.with_raw_response.` to any HTTP method call, e.g.,
 
 ```py
-from octogen.api import OctogenAPI
+from octogen_api import OctogenAPI
 
 client = OctogenAPI()
-response = client.catalog.with_raw_response.agent_search(
-    text="Find me red shoes less than $200",
+response = client.catalog.with_raw_response.text_search(
+    text="text",
 )
 print(response.headers.get('X-My-Header'))
 
-catalog = response.parse()  # get the object that `catalog.agent_search()` would have returned
+catalog = response.parse()  # get the object that `catalog.text_search()` would have returned
 print(catalog.products)
 ```
 
-These methods return an [`APIResponse`](https://github.com/octogen-systems/octogen-py-api/tree/main/src/octogen/api/_response.py) object.
+These methods return an [`APIResponse`](https://github.com/stainless-sdks/octogen-api-python/tree/main/src/octogen_api/_response.py) object.
 
-The async client returns an [`AsyncAPIResponse`](https://github.com/octogen-systems/octogen-py-api/tree/main/src/octogen/api/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
+The async client returns an [`AsyncAPIResponse`](https://github.com/stainless-sdks/octogen-api-python/tree/main/src/octogen_api/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
 
 #### `.with_streaming_response`
 
@@ -243,8 +246,8 @@ The above interface eagerly reads the full response body when you make the reque
 To stream the response body, use `.with_streaming_response` instead, which requires a context manager and only reads the response body once you call `.read()`, `.text()`, `.json()`, `.iter_bytes()`, `.iter_text()`, `.iter_lines()` or `.parse()`. In the async client, these are async methods.
 
 ```python
-with client.catalog.with_streaming_response.agent_search(
-    text="Find me red shoes less than $200",
+with client.catalog.with_streaming_response.text_search(
+    text="text",
 ) as response:
     print(response.headers.get("X-My-Header"))
 
@@ -298,7 +301,7 @@ You can directly override the [httpx client](https://www.python-httpx.org/api/#c
 
 ```python
 import httpx
-from octogen.api import OctogenAPI, DefaultHttpxClient
+from octogen_api import OctogenAPI, DefaultHttpxClient
 
 client = OctogenAPI(
     # Or use the `OCTOGEN_API_BASE_URL` env var
@@ -321,7 +324,7 @@ client.with_options(http_client=DefaultHttpxClient(...))
 By default the library closes underlying HTTP connections whenever the client is [garbage collected](https://docs.python.org/3/reference/datamodel.html#object.__del__). You can manually close the client using the `.close()` method if desired, or with a context manager that closes when exiting.
 
 ```py
-from octogen.api import OctogenAPI
+from octogen_api import OctogenAPI
 
 with OctogenAPI() as client:
   # make requests here
@@ -340,7 +343,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/octogen-systems/octogen-py-api/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/octogen-api-python/issues) with questions, bugs, or suggestions.
 
 ### Determining the installed version
 
@@ -349,8 +352,8 @@ If you've upgraded to the latest version but aren't seeing any new features you 
 You can determine the version that is being used at runtime with:
 
 ```py
-import octogen.api
-print(octogen.api.__version__)
+import octogen_api
+print(octogen_api.__version__)
 ```
 
 ## Requirements
