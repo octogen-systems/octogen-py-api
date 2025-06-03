@@ -6,8 +6,8 @@ import httpx
 import pytest
 import pydantic
 
-from octogen.api import BaseModel, OctogenAPI, AsyncOctogenAPI
-from octogen.api._response import (
+from octogen_api import BaseModel, OctogenAPI, AsyncOctogenAPI
+from octogen_api._response import (
     APIResponse,
     BaseAPIResponse,
     AsyncAPIResponse,
@@ -15,8 +15,8 @@ from octogen.api._response import (
     AsyncBinaryAPIResponse,
     extract_response_type,
 )
-from octogen.api._streaming import Stream
-from octogen.api._base_client import FinalRequestOptions
+from octogen_api._streaming import Stream
+from octogen_api._base_client import FinalRequestOptions
 
 
 class ConcreteBaseAPIResponse(APIResponse[bytes]): ...
@@ -37,7 +37,7 @@ def test_extract_response_type_direct_classes() -> None:
 def test_extract_response_type_direct_class_missing_type_arg() -> None:
     with pytest.raises(
         RuntimeError,
-        match="Expected type <class 'octogen.api._response.AsyncAPIResponse'> to have a type argument at index 0 but it did not",
+        match="Expected type <class 'octogen_api._response.AsyncAPIResponse'> to have a type argument at index 0 but it did not",
     ):
         extract_response_type(AsyncAPIResponse)
 
@@ -68,7 +68,7 @@ def test_response_parse_mismatched_basemodel(client: OctogenAPI) -> None:
 
     with pytest.raises(
         TypeError,
-        match="Pydantic models must subclass our base model type, e.g. `from octogen.api import BaseModel`",
+        match="Pydantic models must subclass our base model type, e.g. `from octogen_api import BaseModel`",
     ):
         response.parse(to=PydanticModel)
 
@@ -86,7 +86,7 @@ async def test_async_response_parse_mismatched_basemodel(async_client: AsyncOcto
 
     with pytest.raises(
         TypeError,
-        match="Pydantic models must subclass our base model type, e.g. `from octogen.api import BaseModel`",
+        match="Pydantic models must subclass our base model type, e.g. `from octogen_api import BaseModel`",
     ):
         await response.parse(to=PydanticModel)
 

@@ -8,15 +8,15 @@ from typing_extensions import Required, Annotated, TypedDict
 
 import pytest
 
-from octogen.api._types import NOT_GIVEN, Base64FileInput
-from octogen.api._utils import (
+from octogen_api._types import NOT_GIVEN, Base64FileInput
+from octogen_api._utils import (
     PropertyInfo,
     transform as _transform,
     parse_datetime,
     async_transform as _async_transform,
 )
-from octogen.api._compat import PYDANTIC_V2
-from octogen.api._models import BaseModel
+from octogen_api._compat import PYDANTIC_V2
+from octogen_api._models import BaseModel
 
 _T = TypeVar("_T")
 

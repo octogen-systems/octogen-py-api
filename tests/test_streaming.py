@@ -5,8 +5,8 @@ from typing import Iterator, AsyncIterator
 import httpx
 import pytest
 
-from octogen.api import OctogenAPI, AsyncOctogenAPI
-from octogen.api._streaming import Stream, AsyncStream, ServerSentEvent
+from octogen_api import OctogenAPI, AsyncOctogenAPI
+from octogen_api._streaming import Stream, AsyncStream, ServerSentEvent
 
 
 @pytest.mark.asyncio

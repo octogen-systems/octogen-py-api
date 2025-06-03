@@ -61,6 +61,6 @@
   ],
   "release-type": "python",
   "extra-files": [
-    "src/octogen/api/_version.py"
+    "src/octogen_api/_version.py"
   ]
 }
