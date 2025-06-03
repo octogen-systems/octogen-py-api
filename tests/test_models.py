@@ -7,9 +7,9 @@ import pytest
 import pydantic
 from pydantic import Field
 
-from octogen_api._utils import PropertyInfo
-from octogen_api._compat import PYDANTIC_V2, parse_obj, model_dump, model_json
-from octogen_api._models import BaseModel, construct_type
+from octogen.api._utils import PropertyInfo
+from octogen.api._compat import PYDANTIC_V2, parse_obj, model_dump, model_json
+from octogen.api._models import BaseModel, construct_type
 
 
 class BasicModel(BaseModel):
