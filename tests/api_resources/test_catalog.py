@@ -7,9 +7,9 @@ from typing import Any, cast
 
 import pytest
 
-from octogen.api import OctogenAPI, AsyncOctogenAPI
+from octogen_api import OctogenAPI, AsyncOctogenAPI
 from tests.utils import assert_matches_type
-from octogen.api.types import (
+from octogen_api.types import (
     SearchToolOutput,
     CatalogUploadFileResponse,
 )

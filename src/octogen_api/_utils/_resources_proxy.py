@@ -7,17 +7,17 @@ from ._proxy import LazyProxy
 
 
 class ResourcesProxy(LazyProxy[Any]):
-    """A proxy for the `octogen.api.resources` module.
+    """A proxy for the `octogen_api.resources` module.
 
-    This is used so that we can lazily import `octogen.api.resources` only when
-    needed *and* so that users can just import `octogen.api` and reference `octogen.api.resources`
+    This is used so that we can lazily import `octogen_api.resources` only when
+    needed *and* so that users can just import `octogen_api` and reference `octogen_api.resources`
     """
 
     @override
     def __load__(self) -> Any:
         import importlib
 
-        mod = importlib.import_module("octogen.api.resources")
+        mod = importlib.import_module("octogen_api.resources")
         return mod
 
 
