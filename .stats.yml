@@ -1,4 +1,4 @@
 configured_endpoints: 5
 openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/octogen-systems-inc%2Foctogen-api-49c6d47acc841a86bac64923632a53827b0fbb2ff113714258873a0c9a6a7658.yml
 openapi_spec_hash: b06b56caf2fe6059a90eba2ec9e486ec
-config_hash: 31e4a9fb99f6311b6741f1eee4a606aa
+config_hash: dfaf4f35c0a46840c2ecedb2e5ff3b23
