@@ -5,7 +5,7 @@ description = "The official Python library for the octogen-api API"
 dynamic = ["readme"]
 license = "MIT"
 authors = [
-{ name = "Octogen API", email = "" },
+{ name = "Octogen API", email = "andrew@octogen.io" },
 ]
 dependencies = [
     "httpx>=0.23.0, <1",
