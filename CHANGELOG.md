@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.1.0-alpha.7 (2025-06-13)
+
+Full Changelog: [v0.1.0-alpha.6...v0.1.0-alpha.7](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.6...v0.1.0-alpha.7)
+
+### Features
+
+* **api:** update via SDK Studio ([1e9501c](https://github.com/octogen-ai/octogen-py-api/commit/1e9501c21f551c73f90d3967bc0ff93149111dba))
+* **api:** update via SDK Studio ([37d4932](https://github.com/octogen-ai/octogen-py-api/commit/37d4932be74e4ee05d1c52c59f325037e012f9f8))
+* **api:** update via SDK Studio ([6653652](https://github.com/octogen-ai/octogen-py-api/commit/6653652811baaaf2a5b6fd8810104b3d28aaa643))
+* **api:** update via SDK Studio ([ae1259d](https://github.com/octogen-ai/octogen-py-api/commit/ae1259d27fc95c82dfe58edbaea284ca90b33722))
+
+
+### Bug Fixes
+
+* **client:** correctly parse binary response | stream ([98c3ab0](https://github.com/octogen-ai/octogen-py-api/commit/98c3ab00aee6893c3eff11c5e406ca8f472d3e3e))
+
+
+### Chores
+
+* **tests:** run tests in parallel ([0a4586d](https://github.com/octogen-ai/octogen-py-api/commit/0a4586d329222cb766dd624fa68ebcdf21f97aff))
+
 ## 0.1.0-alpha.6 (2025-06-03)
 
 Full Changelog: [v0.1.0-alpha.5...v0.1.0-alpha.6](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.5...v0.1.0-alpha.6)
