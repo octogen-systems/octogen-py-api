@@ -1,11 +1,11 @@
 [project]
 name = "octogen-api"
-version = "0.1.0-alpha.6"
+version = "0.1.0-alpha.7"
 description = "The official Python library for the octogen-api API"
 dynamic = ["readme"]
 license = "MIT"
 authors = [
-{ name = "Octogen API", email = "" },
+{ name = "Octogen API", email = "andrew@octogen.io" },
 ]
 dependencies = [
     "httpx>=0.23.0, <1",
@@ -37,6 +37,8 @@ classifiers = [
 Homepage = "https://github.com/octogen-ai/octogen-py-api"
 Repository = "https://github.com/octogen-ai/octogen-py-api"
 
+[project.optional-dependencies]
+aiohttp = ["aiohttp", "httpx_aiohttp>=0.1.6"]
 
 [tool.rye]
 managed = true
@@ -54,6 +56,7 @@ dev-dependencies = [
     "importlib-metadata>=6.7.0",
     "rich>=13.7.1",
     "nest_asyncio==1.6.0",
+    "pytest-xdist>=3.6.1",
 ]
 
 [tool.rye.scripts]
@@ -125,7 +128,7 @@ replacement = '[\1](https://github.com/octogen-ai/octogen-py-api/tree/main/\g<2>
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--tb=short"
+addopts = "--tb=short -n auto"
 xfail_strict = true
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
