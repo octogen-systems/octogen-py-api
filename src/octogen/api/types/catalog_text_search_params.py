@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Iterable, Optional
-from typing_extensions import Required, TypedDict
+from typing import List, Iterable, Optional
+from typing_extensions import Literal, Required, TypedDict
 
 from .facet_param import FacetParam
 
@@ -14,7 +14,8 @@ class CatalogTextSearchParams(TypedDict, total=False):
     text: Required[str]
     """
     The text is converted to a vector embedding and used to search for products in
-    the e-commerce catalog with pre-computed product embeddings.
+    the e-commerce catalog with pre-computed product embeddings. It will be matched
+    against the embeddings from retrieval_embedding_columns during retrieval.
     """
 
     exclusion_facets: Optional[Iterable[FacetParam]]
@@ -38,13 +39,23 @@ class CatalogTextSearchParams(TypedDict, total=False):
     specified value.
     """
 
-    ranking_embedding_column: str
-    """The column to use for the ranking embedding. The default is 'embedding'."""
+    ranking_embedding_columns: Optional[List[Literal["embedding", "style_embedding", "tags_embedding"]]]
+    """The columns to use for the ranking embeddings.
+
+    If not specified, defaults to ['embedding']. Pick the column that best
+    corresponds to the `ranking_text` parameter.
+    """
 
     ranking_text: Optional[str]
-    """
-    The text is converted to a vector embedding and used to rank the search results.
+    """The text is converted to a vector embedding and used to rank the search results.
+
+    It will be matched against the embeddings from ranking_embedding_columns during
+    ranking.
     """
 
-    retrieval_embedding_column: str
-    """The column to use for the retrieval embedding. The default is 'embedding'."""
+    retrieval_embedding_columns: Optional[List[Literal["embedding", "style_embedding", "tags_embedding"]]]
+    """The columns to use for the retrieval embeddings.
+
+    If not specified, defaults to ['embedding']. Pick the column that best
+    corresponds to the `text` parameter.
+    """
