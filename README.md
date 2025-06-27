@@ -1,6 +1,6 @@
 # Octogen API Python API library
 
-[![PyPI version](https://img.shields.io/pypi/v/octogen-api.svg)](https://pypi.org/project/octogen-api/)
+[![PyPI version](<https://img.shields.io/pypi/v/octogen-api.svg?label=pypi%20(stable)>)](https://pypi.org/project/octogen-api/)
 
 The Octogen API Python library provides convenient access to the Octogen API REST API from any Python 3.8+
 application. The library includes type definitions for all request params and response fields,
@@ -67,6 +67,40 @@ asyncio.run(main())
 ```
 
 Functionality between the synchronous and asynchronous clients is otherwise identical.
+
+### With aiohttp
+
+By default, the async client uses `httpx` for HTTP requests. However, for improved concurrency performance you may also use `aiohttp` as the HTTP backend.
+
+You can enable this by installing `aiohttp`:
+
+```sh
+# install from PyPI
+pip install --pre octogen-api[aiohttp]
+```
+
+Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
+
+```python
+import os
+import asyncio
+from octogen.api import DefaultAioHttpClient
+from octogen.api import AsyncOctogenAPI
+
+
+async def main() -> None:
+    async with AsyncOctogenAPI(
+        octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
+        http_client=DefaultAioHttpClient(),
+    ) as client:
+        search_tool_output = await client.catalog.agent_search(
+            text="blue shoes",
+        )
+        print(search_tool_output.products)
+
+
+asyncio.run(main())
+```
 
 ## Using types
 
@@ -163,7 +197,7 @@ client.with_options(max_retries=5).catalog.agent_search(
 ### Timeouts
 
 By default requests time out after 1 minute. You can configure this with a `timeout` option,
-which accepts a float or an [`httpx.Timeout`](https://www.python-httpx.org/advanced/#fine-tuning-the-configuration) object:
+which accepts a float or an [`httpx.Timeout`](https://www.python-httpx.org/advanced/timeouts/#fine-tuning-the-configuration) object:
 
 ```python
 from octogen.api import OctogenAPI

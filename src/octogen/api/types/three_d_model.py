@@ -1,7 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import List, Optional
-from datetime import datetime
 
 from pydantic import Field as FieldInfo
 
@@ -24,7 +23,7 @@ class Encoding(BaseModel):
 
     type: Optional[str] = FieldInfo(alias="type_", default=None)
 
-    upload_date: Optional[datetime] = FieldInfo(alias="uploadDate", default=None)
+    upload_date: Optional[str] = FieldInfo(alias="uploadDate", default=None)
     """The date the media was uploaded."""
 
 
@@ -43,7 +42,7 @@ class ThreeDModel(BaseModel):
     creator: Optional[str] = None
     """The creator of the 3D model."""
 
-    date_published: Optional[datetime] = FieldInfo(alias="datePublished", default=None)
+    date_published: Optional[str] = FieldInfo(alias="datePublished", default=None)
     """Date of first publication."""
 
     embed_url: Optional[str] = FieldInfo(alias="embedUrl", default=None)
@@ -75,5 +74,5 @@ class ThreeDModel(BaseModel):
 
     type: Optional[str] = FieldInfo(alias="type_", default=None)
 
-    upload_date: Optional[datetime] = FieldInfo(alias="uploadDate", default=None)
+    upload_date: Optional[str] = FieldInfo(alias="uploadDate", default=None)
     """The date the media was uploaded."""

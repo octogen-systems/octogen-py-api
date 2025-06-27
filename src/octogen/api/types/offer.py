@@ -1,7 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import List, Union, Optional
-from datetime import datetime
 from typing_extensions import TypeAlias
 
 from pydantic import Field as FieldInfo
@@ -26,10 +25,10 @@ class PriceSpecificationPriceSpecification(BaseModel):
     price_currency: Optional[str] = FieldInfo(alias="priceCurrency", default=None)
     """Currency of the price."""
 
-    valid_from: Optional[datetime] = FieldInfo(alias="validFrom", default=None)
+    valid_from: Optional[str] = FieldInfo(alias="validFrom", default=None)
     """The start of the validity period for the price."""
 
-    valid_through: Optional[datetime] = FieldInfo(alias="validThrough", default=None)
+    valid_through: Optional[str] = FieldInfo(alias="validThrough", default=None)
     """The end of the validity period for the price."""
 
 
@@ -47,10 +46,10 @@ class PriceSpecificationCompoundPriceSpecificationPriceComponent(BaseModel):
     http://schema.org/RegularPrice, http://schema.org/SalePrice, etc.
     """
 
-    valid_from: Optional[datetime] = FieldInfo(alias="validFrom", default=None)
+    valid_from: Optional[str] = FieldInfo(alias="validFrom", default=None)
     """The start of the validity period for the price."""
 
-    valid_through: Optional[datetime] = FieldInfo(alias="validThrough", default=None)
+    valid_through: Optional[str] = FieldInfo(alias="validThrough", default=None)
     """The end of the validity period for the price."""
 
 
@@ -73,10 +72,10 @@ class Offer(BaseModel):
     http://schema.org/OutOfStock, http://schema.org/PreOrder, etc.
     """
 
-    availability_ends: Optional[datetime] = FieldInfo(alias="availabilityEnds", default=None)
+    availability_ends: Optional[str] = FieldInfo(alias="availabilityEnds", default=None)
     """End time of availability."""
 
-    availability_starts: Optional[datetime] = FieldInfo(alias="availabilityStarts", default=None)
+    availability_starts: Optional[str] = FieldInfo(alias="availabilityStarts", default=None)
     """Start time of availability."""
 
     eligible_quantity: Optional[QuantitativeValue] = FieldInfo(alias="eligibleQuantity", default=None)
