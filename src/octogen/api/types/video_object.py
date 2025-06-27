@@ -1,7 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import List, Optional
-from datetime import datetime
 
 from pydantic import Field as FieldInfo
 
@@ -37,5 +36,5 @@ class VideoObject(BaseModel):
 
     type: Optional[str] = None
 
-    upload_date: Optional[datetime] = FieldInfo(alias="uploadDate", default=None)
+    upload_date: Optional[str] = FieldInfo(alias="uploadDate", default=None)
     """The date when the video was uploaded."""

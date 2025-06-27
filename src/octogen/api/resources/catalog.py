@@ -202,9 +202,11 @@ class CatalogResource(SyncAPIResource):
         limit: int | NotGiven = NOT_GIVEN,
         price_max: Optional[float] | NotGiven = NOT_GIVEN,
         price_min: Optional[float] | NotGiven = NOT_GIVEN,
-        ranking_embedding_column: str | NotGiven = NOT_GIVEN,
+        ranking_embedding_columns: Optional[List[Literal["embedding", "style_embedding", "tags_embedding"]]]
+        | NotGiven = NOT_GIVEN,
         ranking_text: Optional[str] | NotGiven = NOT_GIVEN,
-        retrieval_embedding_column: str | NotGiven = NOT_GIVEN,
+        retrieval_embedding_columns: Optional[List[Literal["embedding", "style_embedding", "tags_embedding"]]]
+        | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -221,7 +223,8 @@ class CatalogResource(SyncAPIResource):
 
         Args:
           text: The text is converted to a vector embedding and used to search for products in
-              the e-commerce catalog with pre-computed product embeddings.
+              the e-commerce catalog with pre-computed product embeddings. It will be matched
+              against the embeddings from retrieval_embedding_columns during retrieval.
 
           exclusion_facets: Facets that will be excluded from the search results.
 
@@ -235,11 +238,16 @@ class CatalogResource(SyncAPIResource):
           price_min: The products will be filtered to have a price greater than or equal to the
               specified value.
 
-          ranking_embedding_column: The column to use for the ranking embedding. The default is 'embedding'.
+          ranking_embedding_columns: The columns to use for the ranking embeddings. If not specified, defaults to
+              ['embedding']. Pick the column that best corresponds to the `ranking_text`
+              parameter.
 
           ranking_text: The text is converted to a vector embedding and used to rank the search results.
+              It will be matched against the embeddings from ranking_embedding_columns during
+              ranking.
 
-          retrieval_embedding_column: The column to use for the retrieval embedding. The default is 'embedding'.
+          retrieval_embedding_columns: The columns to use for the retrieval embeddings. If not specified, defaults to
+              ['embedding']. Pick the column that best corresponds to the `text` parameter.
 
           extra_headers: Send extra headers
 
@@ -259,9 +267,9 @@ class CatalogResource(SyncAPIResource):
                     "limit": limit,
                     "price_max": price_max,
                     "price_min": price_min,
-                    "ranking_embedding_column": ranking_embedding_column,
+                    "ranking_embedding_columns": ranking_embedding_columns,
                     "ranking_text": ranking_text,
-                    "retrieval_embedding_column": retrieval_embedding_column,
+                    "retrieval_embedding_columns": retrieval_embedding_columns,
                 },
                 catalog_text_search_params.CatalogTextSearchParams,
             ),
@@ -486,9 +494,11 @@ class AsyncCatalogResource(AsyncAPIResource):
         limit: int | NotGiven = NOT_GIVEN,
         price_max: Optional[float] | NotGiven = NOT_GIVEN,
         price_min: Optional[float] | NotGiven = NOT_GIVEN,
-        ranking_embedding_column: str | NotGiven = NOT_GIVEN,
+        ranking_embedding_columns: Optional[List[Literal["embedding", "style_embedding", "tags_embedding"]]]
+        | NotGiven = NOT_GIVEN,
         ranking_text: Optional[str] | NotGiven = NOT_GIVEN,
-        retrieval_embedding_column: str | NotGiven = NOT_GIVEN,
+        retrieval_embedding_columns: Optional[List[Literal["embedding", "style_embedding", "tags_embedding"]]]
+        | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -505,7 +515,8 @@ class AsyncCatalogResource(AsyncAPIResource):
 
         Args:
           text: The text is converted to a vector embedding and used to search for products in
-              the e-commerce catalog with pre-computed product embeddings.
+              the e-commerce catalog with pre-computed product embeddings. It will be matched
+              against the embeddings from retrieval_embedding_columns during retrieval.
 
           exclusion_facets: Facets that will be excluded from the search results.
 
@@ -519,11 +530,16 @@ class AsyncCatalogResource(AsyncAPIResource):
           price_min: The products will be filtered to have a price greater than or equal to the
               specified value.
 
-          ranking_embedding_column: The column to use for the ranking embedding. The default is 'embedding'.
+          ranking_embedding_columns: The columns to use for the ranking embeddings. If not specified, defaults to
+              ['embedding']. Pick the column that best corresponds to the `ranking_text`
+              parameter.
 
           ranking_text: The text is converted to a vector embedding and used to rank the search results.
+              It will be matched against the embeddings from ranking_embedding_columns during
+              ranking.
 
-          retrieval_embedding_column: The column to use for the retrieval embedding. The default is 'embedding'.
+          retrieval_embedding_columns: The columns to use for the retrieval embeddings. If not specified, defaults to
+              ['embedding']. Pick the column that best corresponds to the `text` parameter.
 
           extra_headers: Send extra headers
 
@@ -543,9 +559,9 @@ class AsyncCatalogResource(AsyncAPIResource):
                     "limit": limit,
                     "price_max": price_max,
                     "price_min": price_min,
-                    "ranking_embedding_column": ranking_embedding_column,
+                    "ranking_embedding_columns": ranking_embedding_columns,
                     "ranking_text": ranking_text,
-                    "retrieval_embedding_column": retrieval_embedding_column,
+                    "retrieval_embedding_columns": retrieval_embedding_columns,
                 },
                 catalog_text_search_params.CatalogTextSearchParams,
             ),
