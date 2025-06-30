@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.8 (2025-06-30)
+
+Full Changelog: [v0.1.0-alpha.7...v0.1.0-alpha.8](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.7...v0.1.0-alpha.8)
+
+### Bug Fixes
+
+* **ci:** correct conditional ([033db88](https://github.com/octogen-ai/octogen-py-api/commit/033db888181cca65c169d8fbe1bd1add99207a12))
+
+
+### Chores
+
+* **ci:** only run for pushes and fork pull requests ([8c58dc4](https://github.com/octogen-ai/octogen-py-api/commit/8c58dc4f1082e24aa468a82dec6748f8b46e74cd))
+
 ## 0.1.0-alpha.7 (2025-06-27)
 
 Full Changelog: [v0.1.0-alpha.6...v0.1.0-alpha.7](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.6...v0.1.0-alpha.7)
