@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.9 (2025-07-02)
+
+Full Changelog: [v0.1.0-alpha.8...v0.1.0-alpha.9](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.8...v0.1.0-alpha.9)
+
+### Chores
+
+* **ci:** change upload type ([faf79c6](https://github.com/octogen-ai/octogen-py-api/commit/faf79c6e68a31754fc06c57bd56cc31661cdc8b1))
+
 ## 0.1.0-alpha.8 (2025-06-30)
 
 Full Changelog: [v0.1.0-alpha.7...v0.1.0-alpha.8](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.7...v0.1.0-alpha.8)
