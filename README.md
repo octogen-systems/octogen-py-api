@@ -83,7 +83,6 @@ pip install --pre octogen-api[aiohttp]
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
 
 ```python
-import os
 import asyncio
 from octogen.api import DefaultAioHttpClient
 from octogen.api import AsyncOctogenAPI
@@ -91,7 +90,7 @@ from octogen.api import AsyncOctogenAPI
 
 async def main() -> None:
     async with AsyncOctogenAPI(
-        octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
+        octogen_api_key="My Octogen API Key",
         http_client=DefaultAioHttpClient(),
     ) as client:
         search_tool_output = await client.catalog.agent_search(
