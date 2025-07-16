@@ -1,6 +1,7 @@
 # Octogen API Python API library
 
-[![PyPI version](<https://img.shields.io/pypi/v/octogen-api.svg?label=pypi%20(stable)>)](https://pypi.org/project/octogen-api/)
+<!-- prettier-ignore -->
+[![PyPI version](https://img.shields.io/pypi/v/octogen-api.svg?label=pypi%20(stable))](https://pypi.org/project/octogen-api/)
 
 The Octogen API Python library provides convenient access to the Octogen API REST API from any Python 3.8+
 application. The library includes type definitions for all request params and response fields,
@@ -82,7 +83,6 @@ pip install --pre octogen-api[aiohttp]
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
 
 ```python
-import os
 import asyncio
 from octogen.api import DefaultAioHttpClient
 from octogen.api import AsyncOctogenAPI
@@ -90,7 +90,7 @@ from octogen.api import AsyncOctogenAPI
 
 async def main() -> None:
     async with AsyncOctogenAPI(
-        octogen_api_key=os.environ.get("OCTOGEN_API_KEY"),  # This is the default and can be omitted
+        octogen_api_key="My Octogen API Key",
         http_client=DefaultAioHttpClient(),
     ) as client:
         search_tool_output = await client.catalog.agent_search(

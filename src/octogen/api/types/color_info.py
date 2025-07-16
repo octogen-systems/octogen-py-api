@@ -14,6 +14,9 @@ class Color(BaseModel):
     This may differ from standard color family names.
     """
 
+    hex_code: Optional[str] = None
+    """The hex code of the color."""
+
     swatch_url: Optional[str] = None
     """A URL pointing to the color swatch image."""
 
