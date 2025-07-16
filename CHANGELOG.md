@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.1.0-alpha.9 (2025-07-16)
+
+Full Changelog: [v0.1.0-alpha.8...v0.1.0-alpha.9](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.8...v0.1.0-alpha.9)
+
+### Features
+
+* **api:** update via SDK Studio ([0545c18](https://github.com/octogen-ai/octogen-py-api/commit/0545c187c54359f4a5ea30c3a04d2184ba36e3b5))
+* clean up environment call outs ([4727d19](https://github.com/octogen-ai/octogen-py-api/commit/4727d190aba50d72c6770a5a6ef4636e52a9aa35))
+
+
+### Bug Fixes
+
+* **client:** don't send Content-Type header on GET requests ([6531285](https://github.com/octogen-ai/octogen-py-api/commit/653128535a3a6e1ac9a70af14aa07e3a4b24f638))
+* **parsing:** correctly handle nested discriminated unions ([74b9ac9](https://github.com/octogen-ai/octogen-py-api/commit/74b9ac988c80ec5e5eec95f02dfe957ff9bd0338))
+
+
+### Chores
+
+* **ci:** change upload type ([faf79c6](https://github.com/octogen-ai/octogen-py-api/commit/faf79c6e68a31754fc06c57bd56cc31661cdc8b1))
+* **internal:** bump pinned h11 dep ([a8f31c0](https://github.com/octogen-ai/octogen-py-api/commit/a8f31c0619aeedc2cb1a8a6b81a9c63b6d96e0e8))
+* **internal:** codegen related update ([a1b35e1](https://github.com/octogen-ai/octogen-py-api/commit/a1b35e1108eb462925a20c091f8db0da38371162))
+* **package:** mark python 3.13 as supported ([d21fc94](https://github.com/octogen-ai/octogen-py-api/commit/d21fc94443ccf5230e592343b0611076329a3af6))
+* **readme:** fix version rendering on pypi ([6abf6b8](https://github.com/octogen-ai/octogen-py-api/commit/6abf6b8c8dc6635421337e5efd97780dd77aeeec))
+
 ## 0.1.0-alpha.8 (2025-06-30)
 
 Full Changelog: [v0.1.0-alpha.7...v0.1.0-alpha.8](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.7...v0.1.0-alpha.8)
