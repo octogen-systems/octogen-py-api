@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.1.0-alpha.10 (2025-07-31)
+
+Full Changelog: [v0.1.0-alpha.9...v0.1.0-alpha.10](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.9...v0.1.0-alpha.10)
+
+### Features
+
+* **client:** support file upload requests ([99dbb4a](https://github.com/octogen-ai/octogen-py-api/commit/99dbb4aae49c14d9d004dd89f467d9cde686e9fb))
+
+
+### Bug Fixes
+
+* **parsing:** ignore empty metadata ([5967786](https://github.com/octogen-ai/octogen-py-api/commit/59677861b8c9a243f2c7c7254af3046cd1613587))
+* **parsing:** parse extra field types ([b397693](https://github.com/octogen-ai/octogen-py-api/commit/b397693fae6e82372bf5715990760c511819ef6c))
+
+
+### Chores
+
+* **project:** add settings file for vscode ([dcfa148](https://github.com/octogen-ai/octogen-py-api/commit/dcfa14865010ffc5c9d211fe56dd87946e223548))
+
 ## 0.1.0-alpha.9 (2025-07-16)
 
 Full Changelog: [v0.1.0-alpha.8...v0.1.0-alpha.9](https://github.com/octogen-ai/octogen-py-api/compare/v0.1.0-alpha.8...v0.1.0-alpha.9)
