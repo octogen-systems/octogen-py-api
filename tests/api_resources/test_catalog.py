@@ -20,7 +20,7 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 class TestCatalog:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_agent_search(self, client: OctogenAPI) -> None:
         catalog = client.catalog.agent_search(
@@ -28,7 +28,7 @@ class TestCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_agent_search_with_all_params(self, client: OctogenAPI) -> None:
         catalog = client.catalog.agent_search(
@@ -37,7 +37,7 @@ class TestCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_agent_search(self, client: OctogenAPI) -> None:
         response = client.catalog.with_raw_response.agent_search(
@@ -49,7 +49,7 @@ class TestCatalog:
         catalog = response.parse()
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_agent_search(self, client: OctogenAPI) -> None:
         with client.catalog.with_streaming_response.agent_search(
@@ -63,7 +63,7 @@ class TestCatalog:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_retrieve_file(self, client: OctogenAPI) -> None:
         catalog = client.catalog.retrieve_file(
@@ -71,7 +71,7 @@ class TestCatalog:
         )
         assert_matches_type(object, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_retrieve_file(self, client: OctogenAPI) -> None:
         response = client.catalog.with_raw_response.retrieve_file(
@@ -83,7 +83,7 @@ class TestCatalog:
         catalog = response.parse()
         assert_matches_type(object, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_retrieve_file(self, client: OctogenAPI) -> None:
         with client.catalog.with_streaming_response.retrieve_file(
@@ -97,7 +97,7 @@ class TestCatalog:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_path_params_retrieve_file(self, client: OctogenAPI) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `file_id` but received ''"):
@@ -105,7 +105,7 @@ class TestCatalog:
                 "",
             )
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_style_and_tags_search(self, client: OctogenAPI) -> None:
         catalog = client.catalog.style_and_tags_search(
@@ -115,7 +115,7 @@ class TestCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_style_and_tags_search_with_all_params(self, client: OctogenAPI) -> None:
         catalog = client.catalog.style_and_tags_search(
@@ -127,7 +127,7 @@ class TestCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_style_and_tags_search(self, client: OctogenAPI) -> None:
         response = client.catalog.with_raw_response.style_and_tags_search(
@@ -141,7 +141,7 @@ class TestCatalog:
         catalog = response.parse()
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_style_and_tags_search(self, client: OctogenAPI) -> None:
         with client.catalog.with_streaming_response.style_and_tags_search(
@@ -157,7 +157,7 @@ class TestCatalog:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_text_search(self, client: OctogenAPI) -> None:
         catalog = client.catalog.text_search(
@@ -165,7 +165,7 @@ class TestCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_text_search_with_all_params(self, client: OctogenAPI) -> None:
         catalog = client.catalog.text_search(
@@ -191,7 +191,7 @@ class TestCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_text_search(self, client: OctogenAPI) -> None:
         response = client.catalog.with_raw_response.text_search(
@@ -203,7 +203,7 @@ class TestCatalog:
         catalog = response.parse()
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_text_search(self, client: OctogenAPI) -> None:
         with client.catalog.with_streaming_response.text_search(
@@ -217,7 +217,7 @@ class TestCatalog:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_upload_file(self, client: OctogenAPI) -> None:
         catalog = client.catalog.upload_file(
@@ -225,7 +225,7 @@ class TestCatalog:
         )
         assert_matches_type(CatalogUploadFileResponse, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_upload_file(self, client: OctogenAPI) -> None:
         response = client.catalog.with_raw_response.upload_file(
@@ -237,7 +237,7 @@ class TestCatalog:
         catalog = response.parse()
         assert_matches_type(CatalogUploadFileResponse, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_upload_file(self, client: OctogenAPI) -> None:
         with client.catalog.with_streaming_response.upload_file(
@@ -257,7 +257,7 @@ class TestAsyncCatalog:
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_agent_search(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.agent_search(
@@ -265,7 +265,7 @@ class TestAsyncCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_agent_search_with_all_params(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.agent_search(
@@ -274,7 +274,7 @@ class TestAsyncCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_agent_search(self, async_client: AsyncOctogenAPI) -> None:
         response = await async_client.catalog.with_raw_response.agent_search(
@@ -286,7 +286,7 @@ class TestAsyncCatalog:
         catalog = await response.parse()
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_agent_search(self, async_client: AsyncOctogenAPI) -> None:
         async with async_client.catalog.with_streaming_response.agent_search(
@@ -300,7 +300,7 @@ class TestAsyncCatalog:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_retrieve_file(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.retrieve_file(
@@ -308,7 +308,7 @@ class TestAsyncCatalog:
         )
         assert_matches_type(object, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_retrieve_file(self, async_client: AsyncOctogenAPI) -> None:
         response = await async_client.catalog.with_raw_response.retrieve_file(
@@ -320,7 +320,7 @@ class TestAsyncCatalog:
         catalog = await response.parse()
         assert_matches_type(object, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_retrieve_file(self, async_client: AsyncOctogenAPI) -> None:
         async with async_client.catalog.with_streaming_response.retrieve_file(
@@ -334,7 +334,7 @@ class TestAsyncCatalog:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_path_params_retrieve_file(self, async_client: AsyncOctogenAPI) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `file_id` but received ''"):
@@ -342,7 +342,7 @@ class TestAsyncCatalog:
                 "",
             )
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_style_and_tags_search(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.style_and_tags_search(
@@ -352,7 +352,7 @@ class TestAsyncCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_style_and_tags_search_with_all_params(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.style_and_tags_search(
@@ -364,7 +364,7 @@ class TestAsyncCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_style_and_tags_search(self, async_client: AsyncOctogenAPI) -> None:
         response = await async_client.catalog.with_raw_response.style_and_tags_search(
@@ -378,7 +378,7 @@ class TestAsyncCatalog:
         catalog = await response.parse()
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_style_and_tags_search(self, async_client: AsyncOctogenAPI) -> None:
         async with async_client.catalog.with_streaming_response.style_and_tags_search(
@@ -394,7 +394,7 @@ class TestAsyncCatalog:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_text_search(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.text_search(
@@ -402,7 +402,7 @@ class TestAsyncCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_text_search_with_all_params(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.text_search(
@@ -428,7 +428,7 @@ class TestAsyncCatalog:
         )
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_text_search(self, async_client: AsyncOctogenAPI) -> None:
         response = await async_client.catalog.with_raw_response.text_search(
@@ -440,7 +440,7 @@ class TestAsyncCatalog:
         catalog = await response.parse()
         assert_matches_type(SearchToolOutput, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_text_search(self, async_client: AsyncOctogenAPI) -> None:
         async with async_client.catalog.with_streaming_response.text_search(
@@ -454,7 +454,7 @@ class TestAsyncCatalog:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_upload_file(self, async_client: AsyncOctogenAPI) -> None:
         catalog = await async_client.catalog.upload_file(
@@ -462,7 +462,7 @@ class TestAsyncCatalog:
         )
         assert_matches_type(CatalogUploadFileResponse, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_upload_file(self, async_client: AsyncOctogenAPI) -> None:
         response = await async_client.catalog.with_raw_response.upload_file(
@@ -474,7 +474,7 @@ class TestAsyncCatalog:
         catalog = await response.parse()
         assert_matches_type(CatalogUploadFileResponse, catalog, path=["response"])
 
-    @pytest.mark.skip()
+    @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_upload_file(self, async_client: AsyncOctogenAPI) -> None:
         async with async_client.catalog.with_streaming_response.upload_file(
